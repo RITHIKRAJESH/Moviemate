@@ -1,0 +1,19 @@
+.scrolling-row {
+    display: flex;
+    white-space: nowrap;
+    animation: scroll-left 10s linear infinite;
+  }
+  
+  .scrolling-row.paused {
+    animation-play-state: paused;
+  }
+  
+  @keyframes scroll-left {
+    0% {
+      transform: translateX(100%);
+    }
+    100% {
+      transform: translateX(-100%);
+    }
+  }
+  
