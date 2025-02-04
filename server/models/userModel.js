@@ -4,7 +4,7 @@ const userSchema=new mongoose.Schema({
     name:{type:String},
     email:{type:String},
     otp:{type:String},
-    verify:{type:Boolean,default:false}
+    verify:{type:Boolean}
 },{timestamps:true})
 
 const userModel=new mongoose.model("user",userSchema)

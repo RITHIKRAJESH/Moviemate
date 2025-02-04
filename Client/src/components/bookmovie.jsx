@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import { useState, useEffect } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import axios from "axios";
 import "./styles.css";
@@ -16,40 +16,56 @@ export default function BookMovie() {
   const [selectedDate, setSelectedDate] = useState("");
   const [selectedTime, setSelectedTime] = useState("");
   const [theaters, setTheaters] = useState([]);
+  const [booked, setBooked] = useState([]);
+  const [bookedSeats, setBookedSeats] = useState([]);
   const [selectedTheater, setSelectedTheater] = useState("");
-  const [userId, setUserId] = useState(null); // State to store the userId
-  const { id } = useParams(); // Get movie _id from URL params
+  const [userId, setUserId] = useState(null);
+
+  const { id } = useParams();
   const navigate = useNavigate();
 
   useEffect(() => {
-    // Get the email from localStorage
     const email = localStorage.getItem("email");
 
-    // If email is found, fetch the userId from the backend
     if (email) {
       axios
-        .get(`http://localhost:9000/user/getUserByEmail/`,{headers:{email:email}})
-        .then((res) => {
-          setUserId(res.data.userId); 
-          console.log(res.data)// Store the userId in state
-        })
-        .catch((err) => {
-          console.error("Error fetching user:", err);
-        });
+        .get(`http://localhost:9000/user/getUserByEmail/`, { headers: { email } })
+        .then((res) => setUserId(res.data.userId))
+        .catch((err) => console.error("Error fetching user:", err));
     }
 
-    // Fetch theaters displaying the movie
-    axios.get(`http://localhost:9000/user/viewtheater/${id}`)
-      .then((res) => {
-        setTheaters(res.data);
-        console.log(res.data);
-      })
-      .catch((err) => {
-        console.error("Error fetching theaters:", err);
-      });
+    axios
+      .get(`http://localhost:9000/user/viewtheater/${id}`)
+      .then((res) => setTheaters(res.data))
+      .catch((err) => console.error("Error fetching theaters:", err));
+
+    axios
+      .get("http://localhost:9000/user/fetchbooked")
+      .then((res) => setBooked(res.data))
+      .catch((err) => console.error("Error fetching booked seats:", err));
   }, [id]);
 
+  useEffect(() => {
+    if (selectedTheater && selectedDate && selectedTime && booked.length > 0) {
+      const filteredSeats = booked
+        .filter(
+          (ticket) =>
+            ticket.movieId._id === id &&
+            ticket.theaterId._id === selectedTheater &&
+            ticket.date.split("T")[0] === selectedDate &&
+            ticket.time === selectedTime
+        )
+        .flatMap((ticket) => ticket.seats);
+
+      setBookedSeats(filteredSeats.map(Number)); // Convert to integers
+    }
+  }, [selectedTheater, selectedDate, selectedTime, booked, id]);
+
   const toggleSeat = (seat) => {
+    if (bookedSeats.includes(seat)) {
+      alert("This seat is already booked. Please choose another.");
+      return;
+    }
     setSelectedSeats((prev) =>
       prev.includes(seat) ? prev.filter((s) => s !== seat) : [...prev, seat]
     );
@@ -62,8 +78,9 @@ export default function BookMovie() {
   }
 
   const calculatePrice = () => {
-    if (!selectedTime || selectedSeats.length === 0) return 0;
-    return ticketPrices[selectedTime] * selectedSeats.length;
+    return selectedTime && selectedSeats.length > 0
+      ? ticketPrices[selectedTime] * selectedSeats.length
+      : 0;
   };
 
   const handleBooking = () => {
@@ -71,31 +88,29 @@ export default function BookMovie() {
       alert("User not logged in");
       return;
     }
-
-    // Make sure to check if all required details are provided before booking
     if (!selectedTheater || !selectedDate || !selectedTime || selectedSeats.length === 0) {
-      alert("Please complete all the fields");
+      alert("Please complete all the fields.");
       return;
     }
 
+    const email = localStorage.getItem("email");
     const bookingDetails = {
-      userId,  // Include the userId in the booking details
+      userId,
       movieId: id,
       date: selectedDate,
       time: selectedTime,
       seats: selectedSeats,
       totalPrice: calculatePrice(),
-      theater: selectedTheater, // Include selected theater in booking details
+      theaterId: selectedTheater,
+      email,
     };
 
-    console.log("Booking Details:", bookingDetails);
-
-    // Send booking data to backend
     axios
       .post("http://localhost:9000/user/bookTickets", bookingDetails)
       .then((res) => {
-        if(res.status==200){
-        navigate("/payment-page", { state: { price: bookingDetails.totalPrice } });}
+        if (res.status === 200) {
+          navigate("/payment-page", { state: { price: bookingDetails.totalPrice } });
+        }
       })
       .catch((err) => {
         console.error("Error booking tickets:", err);
@@ -146,7 +161,9 @@ export default function BookMovie() {
         >
           <option value="">Select Show Time</option>
           {Object.keys(ticketPrices).map((time) => (
-            <option key={time} value={time}>{time}</option>
+            <option key={time} value={time}>
+              {time}
+            </option>
           ))}
         </select>
       </div>
@@ -160,8 +177,11 @@ export default function BookMovie() {
                 key={seat}
                 className={`seat-btn ${selectedSeats.includes(seat) ? "selected" : ""}`}
                 onClick={() => toggleSeat(seat)}
+                disabled={bookedSeats.includes(seat)}
                 style={{
                   marginRight: (seatIndex + 1) % 5 === 0 ? "20px" : "0",
+                  backgroundColor: bookedSeats.includes(seat) ? "red" : "",
+                  cursor: bookedSeats.includes(seat) ? "not-allowed" : "pointer",
                 }}
               >
                 {seat}
@@ -184,3 +204,5 @@ export default function BookMovie() {
     </div>
   );
 }
+
+

@@ -3,6 +3,7 @@ const crypto = require('crypto');
 const User = require('../models/userModel'); // Assuming you have a User model
 const Movie=require('../models/movieModel')
 const Theater=require('../models/theaterModel')
+const Booking=require('../models/bookingModel')
 const loginUser = async (req, res) => {
     const { name, email } = req.body;
     console.log(name, email); // Assuming you're getting name and email from the request body
@@ -128,8 +129,39 @@ const getUserByEmail = async (req, res) => {
     }
   };
   
-const useraddtickets=()=>{
+  const useraddtickets = async (req, res) => {
+    console.log(req.body);
+    try {
+        const { userId, movieId, theaterId, date, time, seats, totalPrice } = req.body;
+        
+        const booking = new Booking({
+            userId, movieId, theaterId, date, time, seats, totalPrice
+        });
 
+        await booking.save();  
+
+        res.status(200).json({ message: "Ticket booked successfully" });  
+    } catch (err) {
+        console.log(err);
+        res.status(500).json({ error: "Something went wrong" });  
+    }
+};
+
+const ticketPayment=async(req,res)=>{
+   
 }
 
-module.exports = { loginUser, verifyOtp ,userViewmovie,userBookTickets,getUserByEmail};
+const fetchBookedTicket = async (req, res) => {
+    try {
+        const booked = await Booking.find({paymentStatus:"Completed"})
+            .populate('movieId')   
+            .populate('theaterId'); 
+        res.status(200).json(booked);
+    } catch (err) {
+        console.error(err);
+        res.status(500).json({ error: "Something went wrong while fetching booked tickets" });
+    }
+};
+
+
+module.exports = { loginUser, verifyOtp ,userViewmovie,userBookTickets,getUserByEmail,useraddtickets,fetchBookedTicket};
