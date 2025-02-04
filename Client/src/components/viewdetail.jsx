@@ -21,7 +21,8 @@ const MovieDetailsPage = () => {
     ],
     storyline: "When political pressure mounts to install a system of accountability, the Avengers are split into opposing factions—one led by Steve Rogers and the other by Tony Stark. Their division culminates in an epic battle between friends, as well as a larger war between nations and organizations across the globe.",
     youtubeTrailerUrl: "https://www.youtube.com/embed/dKrVegVI0Us", // YouTube Trailer
-    streamingLink: "https://www.netflix.com/title/80102249" // Example link to Netflix
+    streamingLink: "https://www.netflix.com/title/80102249", // Example link to Netflix
+    bookMyShowUrl: "https://in.bookmyshow.com/kochi/movies/avengers-civil-war/ET00374104" // BookMyShow link for booking
   };
 
   return (
@@ -94,6 +95,19 @@ const MovieDetailsPage = () => {
                 <Link href={movie.streamingLink} target="_blank" rel="noopener" color="primary">
                   Watch on Netflix
                 </Link>
+              </Box>
+
+              {/* Book Tickets Button */}
+              <Box sx={{ mt: 3 }}>
+                <Button
+                  variant="contained"
+                  color="secondary"
+                  href={movie.bookMyShowUrl}
+                  target="_blank"
+                  rel="noopener"
+                >
+                  Book Tickets
+                </Button>
               </Box>
             </Paper>
           </Grid>

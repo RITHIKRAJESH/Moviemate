@@ -17,3 +17,98 @@
     }
   }
   
+  .seat-container {
+    position: relative;
+    width: 240px;
+    height: 120px;
+    margin: 0 auto;
+    overflow: hidden;
+    border-radius: 120px 120px 0 0;
+    background: lightgray;
+    transform: rotate(180deg);
+  }
+  .container {
+    max-width: 800px;
+    margin: 0 auto;
+  }
+  
+  .theater {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    justify-items: center;
+  }
+  
+  .seat-row {
+    display: flex;
+    justify-content: center;
+    gap: 15px;
+    flex-wrap: wrap;
+  }
+  
+  .seat-btn {
+    background-color: #6c757d;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    padding: 15px 20px;
+    font-size: 16px;
+    transition: background-color 0.3s, transform 0.2s;
+    cursor: pointer;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+  }
+  
+  .seat-btn:hover {
+    background-color: #5a6268;
+    transform: translateY(-2px);
+  }
+  
+  .seat-btn.selected {
+    background-color: #28a745;
+  }
+  
+  .seat-btn:active {
+    transform: translateY(2px);
+  }
+  
+  .btn-primary {
+    margin-top: 20px;
+  }
+    
+
+  .form-group label {
+    font-weight: bold;
+    margin-bottom: 5px;
+    display: block;
+  }
+  
+  .form-control {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    font-size: 16px;
+  }
+  
+  .form-control:focus {
+    border-color: #007bff;
+    outline: none;
+    box-shadow: 0 0 5px rgba(0, 123, 255, 0.5);
+  }
+  
+  .book-btn {
+    background-color: #007bff;
+    color: white;
+    font-size: 18px;
+    padding: 12px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    margin-top: 15px;
+    transition: background 0.3s ease;
+  }
+  
+  .book-btn:hover {
+    background-color: #0056b3;
+  }
+  

@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import AXIOS from 'axios';
 import {
   Container,
@@ -61,9 +61,9 @@ const ViewArtists = () => {
     return <Typography>{error}</Typography>;
   }
 
-  if (filteredArtists.length === 0) {
-    return <Typography>No artists found</Typography>;
-  }
+  // if (filteredArtists.length === 0) {
+  //   return <Typography>No artists found</Typography>;
+  // }
 
   return (
     <Container maxWidth="lg">

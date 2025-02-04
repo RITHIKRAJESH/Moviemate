@@ -1,0 +1,79 @@
+import React, { useState } from "react";
+import { TextField, Button, Container, Typography, Grid } from "@mui/material";
+import axios from "axios";
+
+export default function RegisterTheater() {
+  const [formData, setFormData] = useState({
+    name: "",
+    license: "",
+    email: "",
+    place: "",
+    movies: "",
+    password: "",
+  });
+  const [error, setError] = useState("");
+  const [success, setSuccess] = useState("");
+
+  const handleChange = (e) => {
+    setFormData({ ...formData, [e.target.name]: e.target.value });
+  };
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    setError("");
+    setSuccess("");
+
+    try {
+      const response = await axios.post("http://localhost:9000/theater/register", formData);
+      setSuccess(response.data.message);
+      setFormData({ name: "", license: "", email: "", place: "", movies: "", password: "" });
+    } catch (err) {
+      setError(err.response?.data?.message || "Registration failed");
+    }
+  };
+
+  return (
+    <Container maxWidth="sm">
+      <Typography variant="h4" align="center" gutterBottom>
+        Register Theater
+      </Typography>
+      <form onSubmit={handleSubmit}>
+        <Grid container spacing={2}>
+          <Grid item xs={12}>
+            <TextField label="Theater Name" name="name" fullWidth required value={formData.name} onChange={handleChange} />
+          </Grid>
+          <Grid item xs={12}>
+            <TextField label="License Number" name="license" fullWidth required value={formData.license} onChange={handleChange} />
+          </Grid>
+          <Grid item xs={12}>
+            <TextField label="Email" name="email" type="email" fullWidth required value={formData.email} onChange={handleChange} />
+          </Grid>
+          <Grid item xs={12}>
+            <TextField label="Location/Place" name="place" fullWidth required value={formData.place} onChange={handleChange} />
+          </Grid>
+          <Grid item xs={12}>
+            <TextField label="Movies (comma-separated)" name="movies" fullWidth required value={formData.movies} onChange={handleChange} />
+          </Grid>
+          <Grid item xs={12}>
+            <TextField label="Password" name="password" type="password" fullWidth required value={formData.password} onChange={handleChange} />
+          </Grid>
+          {error && (
+            <Grid item xs={12}>
+              <Typography color="error">{error}</Typography>
+            </Grid>
+          )}
+          {success && (
+            <Grid item xs={12}>
+              <Typography color="primary">{success}</Typography>
+            </Grid>
+          )}
+          <Grid item xs={12}>
+            <Button type="submit" variant="contained" color="primary" fullWidth>
+              Register Theater
+            </Button>
+          </Grid>
+        </Grid>
+      </form>
+    </Container>
+  );
+}
