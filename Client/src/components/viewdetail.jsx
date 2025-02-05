@@ -4,6 +4,7 @@ import { Rating } from '@mui/material';
 
 // Importing the Civil War poster image from assets
 import civilwar1 from '../assets/civilwar1.jpg';
+import { useNavigate } from 'react-router-dom';
 
 const MovieDetailsPage = () => {
   // Example movie data for Avengers: Civil War
@@ -22,8 +23,11 @@ const MovieDetailsPage = () => {
     storyline: "When political pressure mounts to install a system of accountability, the Avengers are split into opposing factions—one led by Steve Rogers and the other by Tony Stark. Their division culminates in an epic battle between friends, as well as a larger war between nations and organizations across the globe.",
     youtubeTrailerUrl: "https://www.youtube.com/embed/dKrVegVI0Us", // YouTube Trailer
     streamingLink: "https://www.netflix.com/title/80102249", // Example link to Netflix
-    bookMyShowUrl: "https://in.bookmyshow.com/kochi/movies/avengers-civil-war/ET00374104" // BookMyShow link for booking
-  };
+    };
+    const navigate=useNavigate()
+    const booking=()=>{
+      navigate('/register-user')
+    }
 
   return (
     <Box>
@@ -102,7 +106,7 @@ const MovieDetailsPage = () => {
                 <Button
                   variant="contained"
                   color="secondary"
-                  href={movie.bookMyShowUrl}
+                  onClick={()=>booking()}
                   target="_blank"
                   rel="noopener"
                 >

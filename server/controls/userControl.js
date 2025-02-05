@@ -41,7 +41,7 @@ const loginUser = async (req, res) => {
         const mailOptions = {
             from: 'rajeshrithik49@gmail.com',
             to: email,
-            subject: 'Your OTP for login/registration',
+            subject: 'Moviemate Otp for login',
             text: `Your OTP is: ${user.otp}`
         };
 
@@ -92,6 +92,19 @@ const userViewmovie = async (req, res) => {
         const movies = await Movie.find();
 
         // Send the movies as a JSON response
+        res.status(200).json(movies);
+    } catch (err) {
+        console.error(err);
+        res.status(500).json({ message: 'Server error' });
+    }
+};
+
+const Viewmovie = async (req, res) => {
+    try {
+        const id=req.params.id
+        console.log(id)
+        const movies = await Movie.find({_id:id});
+        console.log(movies)
         res.status(200).json(movies);
     } catch (err) {
         console.error(err);
@@ -164,4 +177,4 @@ const fetchBookedTicket = async (req, res) => {
 };
 
 
-module.exports = { loginUser, verifyOtp ,userViewmovie,userBookTickets,getUserByEmail,useraddtickets,fetchBookedTicket};
+module.exports = { loginUser, verifyOtp ,userViewmovie,userBookTickets,getUserByEmail,useraddtickets,fetchBookedTicket,Viewmovie};
