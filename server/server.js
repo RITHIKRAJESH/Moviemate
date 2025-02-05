@@ -18,13 +18,12 @@ dbConnect()
 const adminRouter=require('./router/adminRouter')
 app.use("/admin",adminRouter)
 // // user router
-// const userRouter=require('./router/userRouter')
-// app.use("/user",userRouter)
+const userRouter=require('./router/userRouter')
+app.use("/user",userRouter)
 // theater router
 const theaterRouter=require('./router/theaterRouter')
 app.use("/theater",theaterRouter)
 
 
-const userRouter=require('./router/userRouter')
-app.use("/user",userRouter)
+
 app.listen(process.env.PORT,()=>{console.log("Server running at",process.env.PORT)})

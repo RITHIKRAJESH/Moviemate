@@ -1,58 +1,57 @@
-import React from 'react';
-import { Box, Container, Typography, Grid, Button, Paper, Link, Divider } from '@mui/material';
-import { Rating } from '@mui/material';
-
-// Importing the Civil War poster image from assets
-import civilwar1 from '../assets/civilwar1.jpg';
-import { useNavigate } from 'react-router-dom';
+import React, { useState, useEffect } from 'react';
+import { useParams, useNavigate } from 'react-router-dom'; // useNavigate for redirecting
+import { Box, Container, Typography, Grid, Paper, Divider, Rating, Link, Button } from '@mui/material';
+import axios from 'axios';
 
 const MovieDetailsPage = () => {
-  // Example movie data for Avengers: Civil War
-  const movie = {
-    title: "Avengers: Civil War",
-    releaseDate: "April 12, 2016",
-    rating: 4.1,
-    description: "The Avengers must pick sides when political interference in the Avengers' activities causes a rift between former allies Captain America and Iron Man.",
-    cast: [
-      { actor: "Chris Evans", role: "Captain America" },
-      { actor: "Robert Downey Jr.", role: "Iron Man" },
-      { actor: "Scarlett Johansson", role: "Black Widow" },
-      { actor: "Sebastian Stan", role: "Winter Soldier" },
-      { actor: "Tom Holland", role: "Spider-Man" }
-    ],
-    storyline: "When political pressure mounts to install a system of accountability, the Avengers are split into opposing factions—one led by Steve Rogers and the other by Tony Stark. Their division culminates in an epic battle between friends, as well as a larger war between nations and organizations across the globe.",
-    youtubeTrailerUrl: "https://www.youtube.com/embed/dKrVegVI0Us", // YouTube Trailer
-    streamingLink: "https://www.netflix.com/title/80102249", // Example link to Netflix
-    };
-    const navigate=useNavigate()
-    const booking=()=>{
-      navigate('/register-user')
-    }
+  const movieId  = useParams();
+  const navigate = useNavigate();  // Hook to navigate programmatically
+  console.log(movieId) // Get the movie ID from the URL
+  const [movie, setMovie] = useState(null);
+
+  // Fetch movie details by ID
+  useEffect(() => {
+    axios.get(`http://localhost:9000/user/movie/${movieId.id}`)
+      .then((res) => {
+        setMovie(res.data[0]);
+        console.log(res.data)
+      })
+      .catch((error) => {
+        console.error('Error fetching movie:', error);
+      });
+  }, [movieId]);
+
+  if (!movie) {
+    return <Typography variant="h6">Loading movie details...</Typography>;
+  }
+
+  // Handle booking button click to navigate to /register-user
+  const handleBooking = () => {
+    navigate('/register-user');  // Redirect to the register-user page
+  };
 
   return (
     <Box>
       <Container sx={{ mt: 4 }}>
         <Typography variant="h4" gutterBottom>
-          {movie.title}
+          {movie.name}
         </Typography>
         <Grid container spacing={4}>
-          {/* Movie Poster */}
           <Grid item xs={12} md={4}>
             <Box
               component="img"
-              src={civilwar1}
-              alt={movie.title}
+              src={`http://localhost:9000/${movie.poster}`}
+              alt={movie.name}
               sx={{ width: '100%', borderRadius: 2, boxShadow: 3 }}
             />
           </Grid>
 
-          {/* Movie Details */}
           <Grid item xs={12} md={8}>
             <Paper sx={{ padding: 3, boxShadow: 3 }}>
               <Typography variant="h6" gutterBottom>
                 Release Date: {movie.releaseDate}
               </Typography>
-              <Rating value={movie.rating} readOnly precision={0.1} size="small" />
+              <Rating value={movie.rating || 0} readOnly precision={0.1} size="small" />
 
               <Typography variant="body1" sx={{ mt: 2 }}>
                 <strong>Description:</strong> {movie.description}
@@ -62,56 +61,42 @@ const MovieDetailsPage = () => {
                 <strong>Storyline:</strong> {movie.storyline}
               </Typography>
 
-              <Typography variant="h6" sx={{ mt: 2 }}>
-                Cast:
-              </Typography>
-              <Grid container spacing={2}>
-                {movie.cast.map((member, index) => (
-                  <Grid item key={index}>
-                    <Typography variant="body2">
-                      {member.actor} as {member.role}
-                    </Typography>
-                  </Grid>
-                ))}
-              </Grid>
+              <Divider sx={{ my: 3 }} />
+              <Typography variant="h6" sx={{ mb: 1 }}>Cast:</Typography>
+              {movie.actors && movie.actors.length > 0 ? (
+                movie.actors.map((actor, index) => (
+                  <Typography key={index} variant="body2">
+                    • {actor}
+                  </Typography>
+                ))
+              ) : (
+                <Typography variant="body2">No cast information available</Typography>
+              )}
 
               <Divider sx={{ my: 3 }} />
 
-              {/* YouTube Trailer */}
-              <Typography variant="h6" sx={{ mb: 1 }}>
-                Watch the Trailer:
-              </Typography>
-              <iframe
-                width="100%"
-                height="315"
-                src={movie.youtubeTrailerUrl}
-                title="YouTube video player"
-                frameBorder="0"
-                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                allowFullScreen
-              ></iframe>
+              <Typography variant="h6" sx={{ mb: 1 }}>Watch the Trailer:</Typography>
+              <div dangerouslySetInnerHTML={{ __html: movie.trailerLink }} />
 
-              {/* Streaming Link */}
+              {/* Booking Button */}
+              <Box sx={{ mt: 3 }}>
+                <Button
+                  variant="contained"
+                  color="primary"
+                  onClick={handleBooking}
+                  fullWidth
+                >
+                  Book Tickets
+                </Button>
+              </Box>
+
               <Box sx={{ mt: 3 }}>
                 <Typography variant="h6" sx={{ mb: 1 }}>
                   Available for Streaming:
                 </Typography>
-                <Link href={movie.streamingLink} target="_blank" rel="noopener" color="primary">
-                  Watch on Netflix
+                <Link href={movie.platformLink} target="_blank" rel="noopener" color="primary">
+                  Watch Now
                 </Link>
-              </Box>
-
-              {/* Book Tickets Button */}
-              <Box sx={{ mt: 3 }}>
-                <Button
-                  variant="contained"
-                  color="secondary"
-                  onClick={()=>booking()}
-                  target="_blank"
-                  rel="noopener"
-                >
-                  Book Tickets
-                </Button>
               </Box>
             </Paper>
           </Grid>

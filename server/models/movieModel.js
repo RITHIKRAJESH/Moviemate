@@ -12,6 +12,8 @@ const movieSchema = new mongoose.Schema({
   trailerLink: { type: String, required: true },
   genre: { type: String, required: true },
   poster: { type: String, required: false },
+  language:{type:String},
+  industry:{type:String}
 }, { timestamps: true });
 
 const movieModel = mongoose.model('movie', movieSchema);

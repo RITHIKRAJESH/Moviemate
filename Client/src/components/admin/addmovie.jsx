@@ -27,7 +27,10 @@ const AddMovieForm = () => {
   const [trailerLink, setTrailerLink] = useState('');
   const [platformLink, setPlatformLink] = useState('');
   const [genre, setGenre] = useState([]); // Change genre to an array
+  const [language, setLanguage] = useState(''); // New language state
+  const [industry, setIndustry] = useState(''); // New industry state
   const [actorsList, setActorsList] = useState([]); // State to hold the actors list fetched from backend
+
   const genresList = [
     'Action',
     'Comedy',
@@ -48,9 +51,16 @@ const AddMovieForm = () => {
     'Musical',
     'War',
     'Western',
-    'superhero'
+    'Superhero'
   ];
-  
+
+  const languagesList = [
+    'English', 'Hindi', 'Bengali', 'Telugu', 'Tamil', 'Marathi', 'Punjabi', 'Gujarati', 'Malayalam', 'Kannada', 'Urdu', 'Odia', 'Konkani'
+  ];
+
+  const industriesList = [
+    'Indian Cinema', 'Hollywood', 'Tollywood', 'Bollywood', 'Kollywood', 'Mollywood'
+  ];
 
   const maxGenres = 3; // Set the maximum number of genres that can be selected
 
@@ -77,12 +87,14 @@ const AddMovieForm = () => {
     formData.append('releaseDate', releaseDate);
     formData.append('budget', budget);
     formData.append('storyline', storyline);
-    formData.append('actors', JSON.stringify(actors)); // Convert actors array to string
+    formData.append('actors', actors); // Convert actors array to string
     formData.append('rating', rating);
     formData.append('platform', platform);
     formData.append('trailerLink', trailerLink);
     formData.append('platformLink', platformLink);
-    formData.append('genre', JSON.stringify(genre)); // Send the genres as an array
+    formData.append('genre', genre); // Send the genres as an array
+    formData.append('language', language); // Send selected language
+    formData.append('industry', industry); // Send selected industry
 
     if (poster) {
       formData.append('poster', poster);
@@ -225,6 +237,40 @@ const AddMovieForm = () => {
             value={trailerLink}
             onChange={(e) => setTrailerLink(e.target.value)}
           />
+        </Grid>
+
+        <Grid item xs={12} sm={6}>
+          <FormControl fullWidth>
+            <InputLabel>Language</InputLabel>
+            <Select
+              value={language}
+              onChange={(e) => setLanguage(e.target.value)}
+              label="Language"
+            >
+              {languagesList.map((lang, index) => (
+                <MenuItem key={index} value={lang}>
+                  {lang}
+                </MenuItem>
+              ))}
+            </Select>
+          </FormControl>
+        </Grid>
+
+        <Grid item xs={12} sm={6}>
+          <FormControl fullWidth>
+            <InputLabel>Industry</InputLabel>
+            <Select
+              value={industry}
+              onChange={(e) => setIndustry(e.target.value)}
+              label="Industry"
+            >
+              {industriesList.map((industry, index) => (
+                <MenuItem key={index} value={industry}>
+                  {industry}
+                </MenuItem>
+              ))}
+            </Select>
+          </FormControl>
         </Grid>
 
         <Grid item xs={12}>

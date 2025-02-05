@@ -47,6 +47,22 @@ const ViewMovie = () => {
               </Typography>
 
               <Divider sx={{ my: 3 }} />
+              <Typography variant="h6" sx={{ mb: 1 }}>
+  Cast:
+</Typography>
+
+{movie.actors && movie.actors.length > 0 ? (
+  movie.actors.map((actor, index) => (
+    <Typography key={index} variant="body2">
+      • {actor}
+    </Typography>
+  ))
+) : (
+  <Typography variant="body2">No cast information available</Typography>
+)}
+
+
+              <Divider sx={{ my: 3 }} />
 
               <Typography variant="h6" sx={{ mb: 1 }}>
                 Watch the Trailer:

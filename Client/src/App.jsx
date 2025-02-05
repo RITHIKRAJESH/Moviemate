@@ -22,7 +22,7 @@ function App() {
       <Routes>
         <Route path="/" element={<HomePage />} />
         <Route path="/user/userhome" element={<Userhome/>}/> 
-        <Route path="/movie-details" element={<MovieDetailsPage />} />
+        <Route path="/movie-details/:id" element={<MovieDetailsPage />} />
         <Route path="/user/book-movie/:id" element={<Bookmovie/>}/>
         <Route path="/user/movie/:id" element={<ViewMovie/>}/>
         {/* Admin router */}

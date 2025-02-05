@@ -3,7 +3,7 @@ const bcrypt = require("bcrypt");
 
 const registerTheater = async (req, res) => {
     try {
-        const { name, license, email, place, movies, password } = req.body;
+        const { name, license, email, place, password } = req.body;
 
         // Check if theater already exists
         const existingTheater = await TheaterModel.findOne({ email });
@@ -20,7 +20,6 @@ const registerTheater = async (req, res) => {
             license,
             email,
             place,
-            movies,
             password: hashedPassword,
         });
 

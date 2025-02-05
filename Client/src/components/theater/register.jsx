@@ -8,7 +8,6 @@ export default function RegisterTheater() {
     license: "",
     email: "",
     place: "",
-    movies: "",
     password: "",
   });
   const [error, setError] = useState("");
@@ -26,7 +25,7 @@ export default function RegisterTheater() {
     try {
       const response = await axios.post("http://localhost:9000/theater/register", formData);
       setSuccess(response.data.message);
-      setFormData({ name: "", license: "", email: "", place: "", movies: "", password: "" });
+      setFormData({ name: "", license: "", email: "", place: "", password: "" });
     } catch (err) {
       setError(err.response?.data?.message || "Registration failed");
     }
@@ -50,9 +49,6 @@ export default function RegisterTheater() {
           </Grid>
           <Grid item xs={12}>
             <TextField label="Location/Place" name="place" fullWidth required value={formData.place} onChange={handleChange} />
-          </Grid>
-          <Grid item xs={12}>
-            <TextField label="Movies (comma-separated)" name="movies" fullWidth required value={formData.movies} onChange={handleChange} />
           </Grid>
           <Grid item xs={12}>
             <TextField label="Password" name="password" type="password" fullWidth required value={formData.password} onChange={handleChange} />

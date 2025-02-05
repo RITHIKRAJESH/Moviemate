@@ -3,10 +3,53 @@ const artistModel=require('../models/artistModel')
 const path=require('path')
 
 // Add a new movie
+// const addMovie = async (req, res) => {
+//   try {
+//     // Extract data from the request body
+//     const {
+//       movieName,
+//       releaseDate,
+//       budget,
+//       storyline,
+//       actors,
+//       rating,
+//       platform,
+//       platformLink,
+//       trailerLink,
+//       genre,
+//     } = req.body;
+  
+//     // Create a new movie document
+//     const newMovie = new movieModel({
+//       movieName,
+//       releaseDate,
+//       budget,
+//       storyline,
+//       actors,
+//       rating,
+//       platform,
+//       platformLink,
+//       trailerLink,
+//       genre,
+//       poster: req.file ? req.file.path : null, 
+//     });
+
+//     // Save to database
+//     const savedMovie = await newMovie.save();
+//     console.log(savedMovie)
+//     // Respond with success message
+//     res.status(201).json({
+//       message: 'Movie added successfully',
+//     });
+//   } catch (error) {
+//     res.status(500).json({ message: 'Error adding movie', error: error.message });
+//     console.log(error)
+//   }
+// };
 const addMovie = async (req, res) => {
   try {
     // Extract data from the request body
-    const {
+    let {
       movieName,
       releaseDate,
       budget,
@@ -17,15 +60,24 @@ const addMovie = async (req, res) => {
       platformLink,
       trailerLink,
       genre,
+      language,
+      industry
     } = req.body;
-  
+
+    // Ensure actors is an array (split if it's a comma-separated string)
+    if (typeof actors === "string") {
+      actors = actors.split(",").map(actor => actor.trim());
+    }
+
     // Create a new movie document
     const newMovie = new movieModel({
       movieName,
+      language,
+      industry,
       releaseDate,
       budget,
       storyline,
-      actors,
+      actors,  // Now correctly stored as an array
       rating,
       platform,
       platformLink,
@@ -36,14 +88,16 @@ const addMovie = async (req, res) => {
 
     // Save to database
     const savedMovie = await newMovie.save();
-    console.log(savedMovie)
+    console.log(savedMovie);
+
     // Respond with success message
     res.status(201).json({
-      message: 'Movie added successfully',
+      message: "Movie added successfully",
+      movie: savedMovie,
     });
   } catch (error) {
-    res.status(500).json({ message: 'Error adding movie', error: error.message });
-    console.log(error)
+    res.status(500).json({ message: "Error adding movie", error: error.message });
+    console.log(error);
   }
 };
 
