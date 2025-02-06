@@ -9,6 +9,7 @@ import RegisterTheater from "./components/theater/register";
 import UserRegister from "./components/registerUser";
 import Userhome from "./components/user/userhome";
 import ViewMovie from "./components/user/viewmovies";
+import TheaterLogin from "./components/theaterlogin";
 
 // Lazy loading components
 const HomePage = React.lazy(() => import("./components/home"));
@@ -33,6 +34,7 @@ function App() {
         <Route path="/admin/view-movies" element={<ViewMovies />} />
         <Route path="/payment-page" element={<PaymentPage/>}/>
         <Route path="/register-theater" element={<RegisterTheater/>}/>
+        <Route path="/theaterlogin" element={<TheaterLogin/>}/>
         <Route path="/register-user"  element={<UserRegister/>}/>
       </Routes>
     </Suspense>

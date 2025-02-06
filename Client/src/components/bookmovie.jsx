@@ -366,7 +366,7 @@ export default function BookMovie() {
       <h1 className="mb-3 text-center">Book Your Movie Tickets</h1>
 
       {/* Theater Selection */}
-      <div className="form-group">
+      {/* <div className="form-group">
         <label>Select Theater:</label>
         <select
           className="form-control"
@@ -376,11 +376,37 @@ export default function BookMovie() {
           <option value="">Select Theater</option>
           {theaters.map((theater) => (
             <option key={theater._id} value={theater._id}>
-              {theater.name}
+              {theater.name},{theater.place}
             </option>
           ))}
         </select>
+      </div> */}
+         <div className="space-y-4">
+      <div className="grid grid-cols-3 gap-4 boxt">
+        {theaters.map((theater) => (
+          <div
+            key={theater._id}
+            className={`p-4 border rounded-xl shadow-md cursor-pointer transition duration-300 hover:shadow-lg boxtsub ${
+              selectedTheater === theater._id ? "bg-gray-200" : "bg-white"
+            }`}
+            onClick={() => setSelectedTheater(theater._id)}
+          >
+            <h3 className="text-lg font-semibold">{theater.name}</h3>
+            <p className="text-gray-600">{theater.place}</p>
+          </div>
+        ))}
       </div>
+
+      {selectedTheater && (
+        <div className="p-4 border rounded-xl shadow-md bg-gray-100">
+          <h2 className="text-xl font-bold">Selected Theater</h2>
+          <p className="text-gray-700">
+            {theaters.find((t) => t._id === selectedTheater)?.name}, {" "}
+            {theaters.find((t) => t._id === selectedTheater)?.place}
+          </p>
+        </div>
+      )}
+    </div>
 
       {/* Date Picker */}
       <div className="form-group">

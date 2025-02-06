@@ -112,3 +112,58 @@
     background-color: #0056b3;
   }
   
+
+  .boxt {
+    width: 100%;
+    display: flex;
+    height: 100%;
+    border: none;
+    justify-content: center; /* Center the content horizontally */
+    align-items: center; /* Center the content vertically */
+}
+
+.boxtsub {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr); /* 4 equal-width columns */
+    grid-template-rows: repeat(2, 1fr); /* 4 equal-height rows */
+    gap: 20px; /* Space between grid items */
+    width: 90%; /* Ensures it doesn't overflow */
+    max-width: 1200px; /* Optional: Max width for large screens */
+    border: none;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.15); /* Soft shadow */
+    border-radius: 8px; /* Rounded corners */
+    padding: 20px; /* Padding inside the grid */
+    background-color: #f9f9f9; /* Light background */
+    margin-left: 10px;
+}
+
+.boxtsub > div {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: #fff;
+    border-radius: 8px;
+    box-shadow: 0 0 5px rgba(0, 0, 0, 0.1);
+    padding: 20px;
+    transition: transform 0.3s, box-shadow 0.3s;
+}
+
+.boxtsub > div:hover {
+    transform: scale(1.05); /* Slight zoom effect on hover */
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+}
+
+/* Responsiveness: for smaller screens */
+@media (max-width: 1024px) {
+    .boxtsub {
+        grid-template-columns: repeat(2, 1fr); /* 2 columns for medium screens */
+        grid-template-rows: repeat(2, 1fr); /* 2 rows for medium screens */
+    }
+}
+
+@media (max-width: 600px) {
+    .boxtsub {
+        grid-template-columns: 1fr; /* 1 column for small screens */
+        grid-template-rows: auto; /* Automatically adjust row height */
+    }
+}
