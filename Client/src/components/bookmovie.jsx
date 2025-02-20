@@ -354,7 +354,7 @@ export default function BookMovie() {
       .post("http://localhost:9000/user/bookTickets", bookingDetails)
       .then((res) => {
         if (res.status === 200) {
-          navigate("/payment-page", { state: { price: bookingDetails.totalPrice ,userid:bookingDetails.userId } });
+          navigate("/payment-page", { state: { price: bookingDetails.totalPrice ,userid:bookingDetails.userId ,movieid:bookingDetails.movieId} });
         }
       })
       .catch((err) => {

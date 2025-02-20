@@ -167,18 +167,27 @@ const getUserByEmail = async (req, res) => {
 
 const ticketPayment = async (req, res) => { 
     try {
-       const id = req.headers.id;
-       console.log(id)
-       const movie = await Booking.findOne({userId:id});
-       movie.paymentStatus="Completed"
-      await movie.save()
-      console.log(movie)
-       res.json({ message: "Payment Completed Successfully.", updatedBooking: movie,status:200 });
+        const id = req.headers.id;
+        const { movieid } = req.body;
+        console.log("User ID:", id, "Movie ID:", movieid);
+        // Find and update the booking in one step
+        const movie = await Booking.findOneAndUpdate(
+            { userId: id, movieId: movieid },
+            { paymentStatus: "Completed" },
+            { new: true } // Returns the updated document
+        );
+        // If no booking found, return 404
+        if (!movie) {
+            return res.status(404).json({ message: "Booking not found." });
+        }
+        console.log("Updated Booking:", movie);
+        res.status(200).json({ message: "Payment Completed Successfully.", updatedBooking: movie });
     } catch (err) {
-       console.error("Error in ticketPayment:", err);
-       res.status(500).json({ message: "Internal Server Error" });
+        console.error("Error in ticketPayment:", err);
+        res.status(500).json({ message: "Internal Server Error" });
     }
- }; 
+};
+
  
 
 const fetchBookedTicket = async (req, res) => {

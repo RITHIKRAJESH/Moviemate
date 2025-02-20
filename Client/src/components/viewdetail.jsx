@@ -75,29 +75,44 @@ const MovieDetailsPage = () => {
 
               <Divider sx={{ my: 3 }} />
 
-              <Typography variant="h6" sx={{ mb: 1 }}>Watch the Trailer:</Typography>
-              <div dangerouslySetInnerHTML={{ __html: movie.trailerLink }} />
+              <Box sx={{ mt: 3 }}>
+  <Typography variant="h6" sx={{ mb: 1 }}>Watch the Trailer:</Typography>
+  <iframe
+    width="100%"
+    height="315"
+    src={movie.trailerLink.replace("watch?v=", "embed/")}
+    title="YouTube video player"
+    frameBorder="0"
+    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+    allowFullScreen
+  ></iframe>
+</Box>
 
               {/* Booking Button */}
-              <Box sx={{ mt: 3 }}>
-                <Button
-                  variant="contained"
-                  color="primary"
-                  onClick={handleBooking}
-                  fullWidth
-                >
-                  Book Tickets
-                </Button>
-              </Box>
+              {/* Show booking button only if the platform is "Theater show" */}
+{movie.platform === "Theater" ? (
+  <Box sx={{ mt: 3 }}>
+    <Button
+      variant="contained"
+      color="primary"
+      onClick={handleBooking}
+      fullWidth
+    >
+      Book Tickets
+    </Button>
+  </Box>
+) : movie.platformLink ? (
+  /* Show streaming platform link if available */
+  <Box sx={{ mt: 3 }}>
+    <Typography variant="h6" sx={{ mb: 1 }}>
+      Available for Streaming:
+    </Typography>
+    <Link href={movie.platformLink} target="_blank" rel="noopener" color="primary">
+      Watch Now
+    </Link>
+  </Box>
+) : null}
 
-              <Box sx={{ mt: 3 }}>
-                <Typography variant="h6" sx={{ mb: 1 }}>
-                  Available for Streaming:
-                </Typography>
-                <Link href={movie.platformLink} target="_blank" rel="noopener" color="primary">
-                  Watch Now
-                </Link>
-              </Box>
             </Paper>
           </Grid>
         </Grid>

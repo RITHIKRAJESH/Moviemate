@@ -203,7 +203,7 @@ const HomePage = () => {
                           component="img"
                           src={`http://localhost:9000/${movie.poster}`}
                           alt={movie.name}
-                          sx={{ width: "100%", height: "350px", objectFit: "cover" }}
+                          sx={{ width: "100%", height: "350px", objectFit: "fit" }}
                         />
                         <Box sx={{ padding: 2 }}>
                           <Typography variant="h6">{movie.name}</Typography>

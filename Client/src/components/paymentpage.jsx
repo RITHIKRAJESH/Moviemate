@@ -8,6 +8,7 @@ export default function PaymentPage() {
   const navigate = useNavigate();
   const totalPrice = location.state?.price || 0;
   const userid=location.state.userid
+  const movieid=location.state.movieid
   const [cardNumber, setCardNumber] = useState("");
   const [expiryDate, setExpiryDate] = useState("");
   const [cvv, setCvv] = useState("");
@@ -47,7 +48,7 @@ export default function PaymentPage() {
       return;
     }
     console.log(userid)
-    axios.post("http://localhost:9000/user/payment",{},{headers:{id:userid}})
+    axios.post("http://localhost:9000/user/payment",{movieid},{headers:{id:userid}})
     .then((res)=>{
     alert(res.data.message)
     // if(res.data.status==200){

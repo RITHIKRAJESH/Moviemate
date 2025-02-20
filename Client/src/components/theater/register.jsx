@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { TextField, Button, Container, Typography, Grid } from "@mui/material";
 import axios from "axios";
+import { useNavigate } from "react-router-dom";
 
 export default function RegisterTheater() {
   const [formData, setFormData] = useState({
@@ -16,7 +17,7 @@ export default function RegisterTheater() {
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
-
+const navigate=useNavigate()
   const handleSubmit = async (e) => {
     e.preventDefault();
     setError("");
@@ -26,6 +27,9 @@ export default function RegisterTheater() {
       const response = await axios.post("http://localhost:9000/theater/register", formData);
       setSuccess(response.data.message);
       setFormData({ name: "", license: "", email: "", place: "", password: "" });
+      if(response.status==201){
+        navigate("/theaterlogin")
+      }
     } catch (err) {
       setError(err.response?.data?.message || "Registration failed");
     }

@@ -274,7 +274,6 @@ const AddMovieForm = () => {
               value={industry}
               onChange={(e) => setIndustry(e.target.value)}
               label="Industry"
-              required
             >
               {industriesList.map((industry, index) => (
                 <MenuItem key={index} value={industry}>

@@ -6,13 +6,13 @@ import { useNavigate } from 'react-router-dom';
 export default function Theaterhome() {
     const navigate = useNavigate();
     const token = jwtDecode(localStorage.getItem('token'));
-
     // Logout function
     const handleLogout = () => {
         localStorage.removeItem('token'); // Clear token
-        navigate('/theaterlogin'); // Redirect to login page
+        navigate('/'); // Redirect to login page
     };
 
+  
     return (
         <>
             {/* Navbar */}
