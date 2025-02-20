@@ -4,10 +4,11 @@ const User = require('../models/userModel'); // Assuming you have a User model
 const Movie=require('../models/movieModel')
 const Theater=require('../models/theaterModel')
 const Booking=require('../models/bookingModel')
+const jwt=require('jsonwebtoken')
 const loginUser = async (req, res) => {
     const { name, email } = req.body;
     console.log(name, email); // Assuming you're getting name and email from the request body
-
+ 
     try {
         // 1. Check if user exists
         let user = await User.findOne({ email });
@@ -63,6 +64,7 @@ const verifyOtp = async (req, res) => {
     try {
         // Find user by email
         const user = await User.findOne({ email });
+        console.log(user)
         if (!user) {
            
             return res.status(404).json({ message: 'User not found' });
@@ -73,8 +75,11 @@ const verifyOtp = async (req, res) => {
         if (user.otp == otp) {
             // Update user to verified
              user.verify=true
-           
-            res.status(200).json({ message: 'User verified successfully' });
+             const token = jwt.sign({user}, 'jwt-authentication-key', {
+                expiresIn: '1h' 
+            });
+
+            res.status(200).json({ message: 'User verified successfully',token:token });
         } else {
             res.status(400).json({ message: 'Invalid OTP' });
         }
@@ -160,9 +165,21 @@ const getUserByEmail = async (req, res) => {
     }
 };
 
-const ticketPayment=async(req,res)=>{
-   
-}
+const ticketPayment = async (req, res) => { 
+    try {
+       const id = req.headers.id;
+       console.log(id)
+       const movie = await Booking.findOne({userId:id});
+       movie.paymentStatus="Completed"
+      await movie.save()
+      console.log(movie)
+       res.json({ message: "Payment Completed Successfully.", updatedBooking: movie,status:200 });
+    } catch (err) {
+       console.error("Error in ticketPayment:", err);
+       res.status(500).json({ message: "Internal Server Error" });
+    }
+ }; 
+ 
 
 const fetchBookedTicket = async (req, res) => {
     try {
@@ -177,4 +194,14 @@ const fetchBookedTicket = async (req, res) => {
 };
 
 
-module.exports = { loginUser, verifyOtp ,userViewmovie,userBookTickets,getUserByEmail,useraddtickets,fetchBookedTicket,Viewmovie};
+const myBooking=async(req,res)=>{
+    try{
+        const id=req.headers.id
+        const mybooking=await Booking.find({userId:id})
+        res.json(mybooking)
+    }catch(err){
+        console.log(err)
+    }
+}
+
+module.exports = { myBooking,loginUser, verifyOtp ,userViewmovie,userBookTickets,getUserByEmail,useraddtickets,fetchBookedTicket,Viewmovie,ticketPayment};

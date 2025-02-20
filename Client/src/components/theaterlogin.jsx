@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { TextField, Button, Container, Typography, Box, Grid } from "@mui/material";
 import { useNavigate } from "react-router-dom";
+import axios from "axios";
 
 function TheaterLogin() {
   const navigate = useNavigate();
@@ -11,10 +12,25 @@ function TheaterLogin() {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
 
+
+
   // Handle form submission
   const handleSubmit = (e) => {
     e.preventDefault();
-    console.log("Login Data:", formData);
+    console.log("Login Data:", formData)
+    axios.post("http://localhost:9000/theater/theaterlogin",formData)
+    .then((res)=>
+      {
+        alert(res.data.msg)
+        if(res.data.status==200)
+        {
+         navigate('/theaterhome')
+         localStorage.setItem("token",res.data.token)
+        }
+      })
+    .catch(err=>{
+      console.log(err)
+    })
   };
 
   return (

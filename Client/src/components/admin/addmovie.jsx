@@ -127,6 +127,7 @@ const AddMovieForm = () => {
             fullWidth
             value={movieName}
             onChange={(e) => setMovieName(e.target.value)}
+            required
           />
         </Grid>
 
@@ -138,6 +139,7 @@ const AddMovieForm = () => {
             fullWidth
             value={releaseDate}
             onChange={(e) => setReleaseDate(e.target.value)}
+            required
           />
         </Grid>
 
@@ -155,6 +157,7 @@ const AddMovieForm = () => {
             }}
             renderInput={(params) => <TextField {...params} label="Genres" />}
             disableCloseOnSelect
+            required
           />
         </Grid>
 
@@ -166,6 +169,7 @@ const AddMovieForm = () => {
             type="number"
             value={budget}
             onChange={(e) => setBudget(e.target.value)}
+            required
           />
         </Grid>
 
@@ -178,6 +182,7 @@ const AddMovieForm = () => {
             rows={4}
             value={storyline}
             onChange={(e) => setStoryline(e.target.value)}
+            required
           />
         </Grid>
 
@@ -188,6 +193,7 @@ const AddMovieForm = () => {
             value={actors}
             onChange={(event, newValue) => setActors(newValue)}
             renderInput={(params) => <TextField {...params} label="Cast" />}
+            required
           />
         </Grid>
 
@@ -200,6 +206,7 @@ const AddMovieForm = () => {
             step={0.5}
             min={0}
             max={5}
+            required
           />
         </Grid>
 
@@ -210,11 +217,13 @@ const AddMovieForm = () => {
               value={platform}
               onChange={(e) => setPlatform(e.target.value)}
               label="Platform"
+              required
             >
               <MenuItem value="Netflix">Netflix</MenuItem>
               <MenuItem value="Hulu">Hulu</MenuItem>
               <MenuItem value="Amazon Prime">Amazon Prime</MenuItem>
               <MenuItem value="Disney+">Disney+</MenuItem>
+              <MenuItem value="Theater">Theater</MenuItem>
             </Select>
           </FormControl>
         </Grid>
@@ -236,6 +245,7 @@ const AddMovieForm = () => {
             fullWidth
             value={trailerLink}
             onChange={(e) => setTrailerLink(e.target.value)}
+            required
           />
         </Grid>
 
@@ -246,6 +256,7 @@ const AddMovieForm = () => {
               value={language}
               onChange={(e) => setLanguage(e.target.value)}
               label="Language"
+              required
             >
               {languagesList.map((lang, index) => (
                 <MenuItem key={index} value={lang}>
@@ -263,6 +274,7 @@ const AddMovieForm = () => {
               value={industry}
               onChange={(e) => setIndustry(e.target.value)}
               label="Industry"
+              required
             >
               {industriesList.map((industry, index) => (
                 <MenuItem key={index} value={industry}>

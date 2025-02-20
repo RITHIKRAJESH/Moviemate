@@ -48,6 +48,7 @@ const navigate=useNavigate()
       if (response.status === 200) {
         setSuccessMessage(response.data.message);
         localStorage.setItem("email",email)
+        localStorage.setItem("token",response.data.token)
         navigate('/user/userhome')
         setErrorMessage('');
       }

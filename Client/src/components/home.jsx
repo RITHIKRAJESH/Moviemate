@@ -9,6 +9,7 @@ import {
   Grid,
   Rating,
   CircularProgress,
+  Button
 } from '@mui/material';
 import { Swiper, SwiperSlide } from 'swiper/react';
 import { Navigation, Pagination, Autoplay } from 'swiper/modules';
@@ -49,6 +50,9 @@ const HomePage = () => {
   const bollywoodMovies = movies.filter((movie) => movie.industry === 'Bollywood');
   const mollywoodMovies = movies.filter((movie) => movie.industry === 'Mollywood');
   const otherMovies = movies.filter((movie) => !['Hollywood', 'Bollywood', 'Mollywood'].includes(movie.industry));
+  const redirectToTheaterLogin = () => {
+    navigate('/theaterlogin');
+  };
 
   return (
     <Box>
@@ -58,6 +62,13 @@ const HomePage = () => {
           <Typography variant="h6" sx={{ color: "red" }}>
             Movie Hub
           </Typography>
+          <Button 
+            variant="contained" 
+            color="error" 
+            onClick={redirectToTheaterLogin}
+          >
+            Theater Login
+          </Button>
         </Toolbar>
       </AppBar>
 

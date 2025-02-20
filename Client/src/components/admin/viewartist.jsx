@@ -92,7 +92,7 @@ const ViewArtists = () => {
                 <TableCell><strong>Name</strong></TableCell>
                 <TableCell><strong>Birth Place</strong></TableCell>
                 <TableCell><strong>Date of Birth</strong></TableCell>
-                <TableCell><strong>First Movie</strong></TableCell>
+                <TableCell><strong>Language</strong></TableCell>
                 <TableCell><strong>Awards</strong></TableCell>
                 <TableCell><strong>Net Worth</strong></TableCell>
                 <TableCell><strong>Role</strong></TableCell>

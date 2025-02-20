@@ -1,11 +1,13 @@
 import React, { useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import { Button, Card, CardContent, Typography, TextField, Grid } from "@mui/material";
+import axios from "axios";
 
 export default function PaymentPage() {
   const location = useLocation();
   const navigate = useNavigate();
   const totalPrice = location.state?.price || 0;
+  const userid=location.state.userid
   const [cardNumber, setCardNumber] = useState("");
   const [expiryDate, setExpiryDate] = useState("");
   const [cvv, setCvv] = useState("");
@@ -44,8 +46,16 @@ export default function PaymentPage() {
       setError("Cardholder name cannot be empty");
       return;
     }
-    alert("Payment Successful!");
-    navigate("/");
+    console.log(userid)
+    axios.post("http://localhost:9000/user/payment",{},{headers:{id:userid}})
+    .then((res)=>{
+    alert(res.data.message)
+    // if(res.data.status==200){
+    //   // navigate('/user/userhome')
+    // }
+    }).catch((err)=>{
+      console.log("error",err)
+    })
   };
 
   return (

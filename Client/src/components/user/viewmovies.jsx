@@ -67,15 +67,7 @@ const ViewMovie = () => {
               <Typography variant="h6" sx={{ mb: 1 }}>
                 Watch the Trailer:
               </Typography>
-              <iframe
-                width="100%"
-                height="315"
-                src={movie.youtubeTrailerUrl}
-                title="YouTube video player"
-                frameBorder="0"
-                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                allowFullScreen
-              ></iframe>
+              <div dangerouslySetInnerHTML={{ __html: movie.trailerLink }} />
 
               <Box sx={{ mt: 3 }}>
                 <Typography variant="h6" sx={{ mb: 1 }}>

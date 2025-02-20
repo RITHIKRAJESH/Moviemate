@@ -14,6 +14,7 @@ import {
   Card,
   CardMedia,
   CardContent,
+  Button, // Import Button component
 } from '@mui/material';
 import axios from 'axios';
 
@@ -41,6 +42,14 @@ const UserHome = () => {
     navigate(`/user/movie/${movie._id}`, { state: { movie } });
   };
 
+  const handleMyBookings = () => {
+    navigate('/user/mybooking'); // Navigate to My Bookings page
+  };
+
+  const handleLogout = () => {
+    navigate('/'); 
+    localStorage.clear()
+  };
   const filteredMovies = movies.filter((movie) => (
     (!selectedGenre || movie.genre === selectedGenre) &&
     (!selectedArtist || movie.artist === selectedArtist) &&
@@ -49,14 +58,22 @@ const UserHome = () => {
 
   return (
     <Box>
+      {/* AppBar with My Bookings Button */}
       <AppBar position="static" sx={{ backgroundColor: "black" }}>
-        <Toolbar sx={{ display: "flex", justifyContent: "space-between" }}>
+        <Toolbar sx={{ display: "flex", justifyContent: "flex-end",gap:"25px" }}>
           <Typography variant="h6" sx={{ color: "red" }}>
             Movie Hub
           </Typography>
+          <Button variant="contained" color="error" onClick={handleMyBookings}>
+            My Bookings
+          </Button>
+          <Button variant="contained" color="error" onClick={handleLogout}>
+           LOGOUT
+          </Button>
         </Toolbar>
       </AppBar>
 
+      {/* Filters Section */}
       <Container sx={{ mt: 4, display: "flex", gap: 2, backgroundColor: "white" }}>
         <TextField
           select
@@ -103,6 +120,7 @@ const UserHome = () => {
         </TextField>
       </Container>
 
+      {/* Movie List */}
       <Container sx={{ mt: 4 }}>
         {loading ? (
           <Box sx={{ display: "flex", justifyContent: "center", mt: 4 }}>
@@ -144,4 +162,4 @@ const UserHome = () => {
   );
 };
 
-export default UserHome
+export default UserHome;

@@ -284,7 +284,9 @@ export default function BookMovie() {
 
     axios
       .get("http://localhost:9000/user/fetchbooked")
-      .then((res) => setBooked(res.data))
+    .then((res) => {setBooked(res.data)
+      console.log(res.data)
+    })
       .catch((err) => console.error("Error fetching booked seats:", err));
   }, [id]);
 
@@ -352,7 +354,7 @@ export default function BookMovie() {
       .post("http://localhost:9000/user/bookTickets", bookingDetails)
       .then((res) => {
         if (res.status === 200) {
-          navigate("/payment-page", { state: { price: bookingDetails.totalPrice } });
+          navigate("/payment-page", { state: { price: bookingDetails.totalPrice ,userid:bookingDetails.userId } });
         }
       })
       .catch((err) => {
@@ -462,7 +464,7 @@ export default function BookMovie() {
 
       {/* Summary */}
       <p className="text-center mt-3">Selected Seats: {selectedSeats.join(", ") || "None"}</p>
-      <p className="text-center">Total Price: ${calculatePrice()}</p>
+      <p className="text-center">Total Price: Rs.{calculatePrice()}</p>
       <button
         className="book-btn w-100"
         disabled={!selectedDate || !selectedTime || selectedSeats.length === 0 || !selectedTheater}
