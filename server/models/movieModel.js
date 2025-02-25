@@ -8,7 +8,7 @@ const movieSchema = new mongoose.Schema({
   actors: { type: [String], required: true },
   rating: { type: Number, required: true, min: 0, max: 5 },
   platform: { type: String, required: true },
-  platformLink: { type: String },
+  video: { type: String },
   trailerLink: { type: String, required: true },
   genre: { type: String, required: true },
   poster: { type: String, required: false },

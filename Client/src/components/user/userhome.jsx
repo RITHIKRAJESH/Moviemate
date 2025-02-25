@@ -51,10 +51,11 @@ const UserHome = () => {
     localStorage.clear()
   };
   const filteredMovies = movies.filter((movie) => (
-    (!selectedGenre || movie.genre === selectedGenre) &&
-    (!selectedArtist || movie.artist === selectedArtist) &&
-    (!selectedRating || movie.rating >= selectedRating)
+    (!selectedGenre || movie.genre.toLowerCase().includes(selectedGenre.toLowerCase())) &&
+    (!selectedArtist || movie.artist.toLowerCase().includes(selectedArtist.toLowerCase())) &&
+    (!selectedRating || movie.rating.toString().includes(selectedRating.toString()))
   ));
+  
 
   return (
     <Box>
@@ -85,9 +86,9 @@ const UserHome = () => {
           sx={{ width: 200 }}
         >
           <MenuItem value="">All</MenuItem>
-          <MenuItem value="Action">Action</MenuItem>
-          <MenuItem value="Adventure">Adventure</MenuItem>
-          <MenuItem value="Thriller">Thriller</MenuItem>
+          <MenuItem value="Action ">Action</MenuItem>
+          <MenuItem value="Adventure ">Adventure</MenuItem>
+          <MenuItem value="Thriller ">Thriller</MenuItem>
         </TextField>
 
         <TextField

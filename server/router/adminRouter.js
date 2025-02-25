@@ -17,7 +17,13 @@ const storage = multer.diskStorage({
 
 const upload = multer({ storage:storage });
 
-adminRouter.route('/add-movie').post(upload.single('poster'), addMovie);
+adminRouter.route('/add-movie').post(
+  upload.fields([
+    { name: 'poster', maxCount: 1 },
+    { name: 'video', maxCount: 1 }
+  ]),
+  addMovie
+);
 
 adminRouter.route('/add-artist').post(upload.single('image'), addArtist);
 

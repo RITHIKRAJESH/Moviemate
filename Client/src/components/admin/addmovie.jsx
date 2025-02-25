@@ -30,6 +30,7 @@ const AddMovieForm = () => {
   const [language, setLanguage] = useState(''); // New language state
   const [industry, setIndustry] = useState(''); // New industry state
   const [actorsList, setActorsList] = useState([]); // State to hold the actors list fetched from backend
+  const [video, setVideo] = useState(null);
 
   const genresList = [
     'Action',
@@ -79,6 +80,9 @@ const AddMovieForm = () => {
   const handlePosterUpload = (e) => {
     setPoster(e.target.files[0]);
   };
+  const handleVideoUpload = (e) => {
+    setVideo(e.target.files[0]);
+  };
 
   const handleSubmit = () => {
     const formData = new FormData();
@@ -91,13 +95,15 @@ const AddMovieForm = () => {
     formData.append('rating', rating);
     formData.append('platform', platform);
     formData.append('trailerLink', trailerLink);
-    formData.append('platformLink', platformLink);
     formData.append('genre', genre); // Send the genres as an array
     formData.append('language', language); // Send selected language
     formData.append('industry', industry); // Send selected industry
 
     if (poster) {
       formData.append('poster', poster);
+    }
+    if (video) {
+      formData.append('video', video); 
     }
 
     AXIOS.post('http://localhost:9000/admin/add-movie', formData, {
@@ -219,24 +225,18 @@ const AddMovieForm = () => {
               label="Platform"
               required
             >
-              <MenuItem value="Netflix">Netflix</MenuItem>
-              <MenuItem value="Hulu">Hulu</MenuItem>
-              <MenuItem value="Amazon Prime">Amazon Prime</MenuItem>
-              <MenuItem value="Disney+">Disney+</MenuItem>
+              <MenuItem value="Ott">OTT</MenuItem>
               <MenuItem value="Theater">Theater</MenuItem>
             </Select>
           </FormControl>
         </Grid>
 
-        <Grid item xs={12} sm={6}>
-          <TextField
-            label="Platform Link"
-            variant="outlined"
-            fullWidth
-            value={platformLink}
-            onChange={(e) => setPlatformLink(e.target.value)}
-          />
-        </Grid>
+        <Grid item xs={12}>
+  <Button variant="contained" component="label" startIcon={<PhotoCamera />}>
+    Upload Video
+    <input type="file" accept="video/*" hidden onChange={handleVideoUpload} />
+  </Button>
+</Grid>
 
         <Grid item xs={12} sm={6}>
           <TextField

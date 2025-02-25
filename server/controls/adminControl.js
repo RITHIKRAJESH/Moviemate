@@ -57,7 +57,7 @@ const addMovie = async (req, res) => {
       actors,
       rating,
       platform,
-      platformLink,
+      video,
       trailerLink,
       genre,
       language,
@@ -77,13 +77,14 @@ const addMovie = async (req, res) => {
       releaseDate,
       budget,
       storyline,
-      actors,  // Now correctly stored as an array
+      actors,  
       rating,
       platform,
-      platformLink,
+      poster: req.files['poster'] ? req.files['poster'][0].path : null,
+      video : req.files['video'] ? req.files['video'][0].path : null,
       trailerLink,
       genre,
-      poster: req.file ? req.file.path : null, 
+     
     });
 
     // Save to database

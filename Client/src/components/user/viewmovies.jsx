@@ -82,29 +82,32 @@ const ViewMovie = () => {
              
                            {/* Booking Button */}
                            {/* Show booking button only if the platform is "Theater show" */}
-             {movie.platform === "Theater" ? (
-               <Box sx={{ mt: 3 }}>
-                 <Button
-                   variant="contained"
-                   color="primary"
-                   onClick={handleBookTickets}
-                   fullWidth
-                 >
-                   Book Tickets
-                 </Button>
-               </Box>
-             ) : movie.platformLink ? (
-               /* Show streaming platform link if available */
-               <Box sx={{ mt: 3 }}>
-                 <Typography variant="h6" sx={{ mb: 1 }}>
-                   Available for Streaming:
-                 </Typography>
-                 <Link href={movie.platformLink} target="_blank" rel="noopener" color="primary">
-                   Watch Now
-                 </Link>
-               </Box>
-             ) : null}
-             
+                           {movie.platform === "Theater" ? (
+  <Box sx={{ mt: 3 }}>
+    <Button
+      variant="contained"
+      color="primary"
+      onClick={handleBookTickets}
+      fullWidth
+    >
+      Book Tickets
+    </Button>
+  </Box>
+) : movie.video ? (
+  /* Show video player if a video is available */
+  <Box sx={{ mt: 3 }}>
+    <Typography variant="h6" sx={{ mb: 1 }}>
+      Available for Streaming:
+    </Typography>
+    <video 
+      src={`http://localhost:9000/${movie.video}`} 
+      controls 
+      width="100%" 
+      style={{ maxWidth: "600px" }} // Optional: Limit max size
+    />
+  </Box>
+) : null}
+
             </Paper>
           </Grid>
         </Grid>

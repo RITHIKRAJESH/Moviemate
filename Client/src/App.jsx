@@ -35,11 +35,11 @@ function App() {
         <Route path="user/mybooking" element={<Mybooking />} />
         <Route path="/payment-page" element={<PaymentPage />} />
         {/* Admin Routes */}
-        <Route path="/admin/dashboard" element={<AdminDashboard />} />
-        <Route path="/admin/add-artist-form" element={<ArtistForm />} />
+        <Route path="/admin/*" element={<AdminDashboard />} />
+        {/* <Route path="/admin/add-artist-form" element={<ArtistForm />} />
         <Route path="/admin/add-movie-form" element={<AddMovieForm />} />
         <Route path="/admin/view-artists" element={<ViewArtist />} />
-        <Route path="/admin/view-movies" element={<ViewMovies />} />
+        <Route path="/admin/view-movies" element={<ViewMovies />} /> */}
 
         {/* Other Routes */}
        

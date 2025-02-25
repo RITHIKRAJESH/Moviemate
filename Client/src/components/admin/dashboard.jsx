@@ -1,40 +1,55 @@
-import React from 'react';
-import { Link, Route, Routes } from 'react-router-dom';
-import { Box, Container, Drawer, List, ListItem, ListItemText, AppBar, Toolbar, Typography } from '@mui/material';
-import ViewMovies from './viewcinema'; // Import ViewMovies component
-import ViewArtists from './viewartist'; // Import ViewArtists component
-import AddMovieForm from './addmovie'; // Import AddMovieForm component
-import AddArtistForm from './addartist'; // Import AddArtistForm component
+import React from "react";
+import { Link, Route, Routes } from "react-router-dom";
+import { 
+  Box, Drawer, List, ListItemButton, ListItemText, 
+  AppBar, Toolbar, Typography, CssBaseline 
+} from "@mui/material";
+import ViewMovies from "./viewcinema";
+import ViewArtists from "./viewartist";
+import AddMovieForm from "./addmovie";
+import AddArtistForm from "./addartist";
+
+const drawerWidth = 240;
 
 const AdminDashboard = () => {
   return (
-    <Box sx={{ display: 'flex' }}>
+    <Box sx={{ display: "flex", minHeight: "100vh", bgcolor: "#f5f5f5" }}>
+      <CssBaseline />
+
       {/* Sidebar */}
       <Drawer
+        variant="permanent"
         sx={{
-          width: 240,
+          width: drawerWidth,
           flexShrink: 0,
-          '& .MuiDrawer-paper': {
-            width: 240,
-            boxSizing: 'border-box',
+          "& .MuiDrawer-paper": {
+            width: drawerWidth,
+            boxSizing: "border-box",
+            bgcolor: "#121212", // Black sidebar
+            color: "white",
+            position: "fixed", // Fixes sidebar position
           },
         }}
-        variant="permanent"
-        anchor="left"
       >
-        <List>
-          <ListItem button component={Link} to="/admin/view-movies">
-            <ListItemText primary="View Movies" />
-          </ListItem>
-          <ListItem button component={Link} to="/admin/view-artists">
-            <ListItemText primary="View Artists" />
-          </ListItem>
-          {/* <ListItem button component={Link} to="/admin/add-movie-form">
-            <ListItemText primary="Add Movie" />
-          </ListItem>
-          <ListItem button component={Link} to="/admin/add-artist-form">
-            <ListItemText primary="Add Artist" />
-          </ListItem> */}
+        <List sx={{ mt: 2 }}>
+          {[
+            { text: "View Movies", path: "/admin/view-movies" },
+            { text: "View Artists", path: "/admin/view-artists" },
+            { text: "Add Movie", path: "/admin/add-movie-form" },
+            { text: "Add Artist", path: "/admin/add-artist-form" },
+            {text:"Logout",path:"/"},
+          ].map((item, index) => (
+            <ListItemButton 
+              key={index} 
+              component={Link} 
+              to={item.path}
+              sx={{
+                "&:hover": { bgcolor: "#ff0000", color: "white" }, // Red hover effect
+              }}
+            >
+              <ListItemText primary={item.text} sx={{ textAlign: "center" }} />
+            </ListItemButton>
+          ))}
         </List>
       </Drawer>
 
@@ -43,17 +58,28 @@ const AdminDashboard = () => {
         component="main"
         sx={{
           flexGrow: 1,
-          bgcolor: 'background.default',
+          bgcolor: "white",
           p: 3,
+          ml: `${drawerWidth}px`,
         }}
       >
-        <AppBar position="sticky">
+        <AppBar position="sticky" sx={{ bgcolor: "#ff0000" }}> 
           <Toolbar>
-            <Typography variant="h6" noWrap>
+            <Typography variant="h6" noWrap sx={{ color: "white", fontWeight: "bold" }}>
               Admin Dashboard
             </Typography>
           </Toolbar>
         </AppBar>
+
+        {/* Routes */}
+        <Box sx={{ mt: 4 }}>
+          <Routes>
+            <Route path="/view-movies" element={<ViewMovies />} />
+            <Route path="/view-artists" element={<ViewArtists />} />
+            <Route path="/add-movie-form" element={<AddMovieForm />} />
+            <Route path="/add-artist-form" element={<AddArtistForm />} />
+          </Routes>
+        </Box>
       </Box>
     </Box>
   );

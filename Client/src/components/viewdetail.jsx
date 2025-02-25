@@ -101,15 +101,13 @@ const MovieDetailsPage = () => {
       Book Tickets
     </Button>
   </Box>
-) : movie.platformLink ? (
+) : movie.video ? (
   /* Show streaming platform link if available */
   <Box sx={{ mt: 3 }}>
     <Typography variant="h6" sx={{ mb: 1 }}>
       Available for Streaming:
     </Typography>
-    <Link href={movie.platformLink} target="_blank" rel="noopener" color="primary">
-      Watch Now
-    </Link>
+    <Button  onClick={handleBooking}>View Movie</Button>
   </Box>
 ) : null}
 
