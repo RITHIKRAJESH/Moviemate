@@ -54,14 +54,14 @@ export default function ViewUsers() {
                 <TableCell>{user.name}</TableCell>
                 <TableCell>{user.email}</TableCell>
                 <TableCell>{user.otp}</TableCell>
-                <TableCell>{user.verification || "Inactive"}</TableCell>
+                <TableCell>{user.verify || "Active"}</TableCell>
                 <TableCell>
                   <Button
                     variant="contained"
-                    color={user.verification === "Active" ? "success" : "error"}
-                    onClick={() => handleVerificationToggle(user._id, user.verification || "Inactive")}
+                    color={user.verify == false ? "active" : "error"}
+                    // onClick={() => handleVerificationToggle(user._id, user.verification || "Inactive")}
                   >
-                    {user.verification === "Active" ? "Deactivate" : "Activate"}
+                   Deactivate
                   </Button>
                 </TableCell>
               </TableRow>
