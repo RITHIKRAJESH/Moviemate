@@ -1,5 +1,7 @@
 const movieModel = require('../models/movieModel');
 const artistModel=require('../models/artistModel')
+const theaterModel=require('../models/theaterModel')
+const userModel=require('../models/userModel')
 const path=require('path')
 
 // Add a new movie
@@ -157,4 +159,11 @@ const getMovies =async(req, res) => {
     
 };
 
-module.exports = { addMovie ,addArtist, getArtist , getMovies };
+
+const viewTheaters=async(req,res)=>{
+  const theaters=await theaterModel.find()
+  const users=await userModel.find() 
+  res.json({theaters:theaters,users:users})
+}
+
+module.exports = { addMovie ,addArtist, getArtist , getMovies,viewTheaters};

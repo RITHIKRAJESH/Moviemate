@@ -8,6 +8,8 @@ import ViewMovies from "./viewcinema";
 import ViewArtists from "./viewartist";
 import AddMovieForm from "./addmovie";
 import AddArtistForm from "./addartist";
+import Viewtheaters from "./viewthaeters";
+import Viewusers from "./viewusers";
 
 const drawerWidth = 240;
 
@@ -37,6 +39,8 @@ const AdminDashboard = () => {
             { text: "View Artists", path: "/admin/view-artists" },
             { text: "Add Movie", path: "/admin/add-movie-form" },
             { text: "Add Artist", path: "/admin/add-artist-form" },
+            { text: "View Theaters", path: "/admin/view-theaters" },
+            { text: "View Users", path: "/admin/view-users" },
             {text:"Logout",path:"/"},
           ].map((item, index) => (
             <ListItemButton 
@@ -60,7 +64,7 @@ const AdminDashboard = () => {
           flexGrow: 1,
           bgcolor: "white",
           p: 3,
-          ml: `${drawerWidth}px`,
+          ml: `15px`,
         }}
       >
         <AppBar position="sticky" sx={{ bgcolor: "#ff0000" }}> 
@@ -74,10 +78,13 @@ const AdminDashboard = () => {
         {/* Routes */}
         <Box sx={{ mt: 4 }}>
           <Routes>
+          <Route path="/" element={<ViewMovies />} />
             <Route path="/view-movies" element={<ViewMovies />} />
             <Route path="/view-artists" element={<ViewArtists />} />
             <Route path="/add-movie-form" element={<AddMovieForm />} />
             <Route path="/add-artist-form" element={<AddArtistForm />} />
+            <Route path="/view-theaters" element={<Viewtheaters/>}/>
+            <Route path="/view-users" element={<Viewusers/>}/>
           </Routes>
         </Box>
       </Box>

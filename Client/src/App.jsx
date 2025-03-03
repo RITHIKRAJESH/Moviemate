@@ -5,6 +5,7 @@ import Theaterhome from "./components/theater/theaterhome";
 import Addmovies from "./components/theater/addmovies";
 import Bookings from "./components/theater/bookings";
 import Profile from "./components/theater/profile";
+import AdminLogin from "./components/adminlogin";
 
 // Lazy loading components
 const HomePage = React.lazy(() => import("./components/home"));
@@ -36,6 +37,7 @@ function App() {
         <Route path="/payment-page" element={<PaymentPage />} />
         {/* Admin Routes */}
         <Route path="/admin/*" element={<AdminDashboard />} />
+        <Route path="/login" element={<AdminLogin/>}/>
         {/* <Route path="/admin/add-artist-form" element={<ArtistForm />} />
         <Route path="/admin/add-movie-form" element={<AddMovieForm />} />
         <Route path="/admin/view-artists" element={<ViewArtist />} />

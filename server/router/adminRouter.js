@@ -1,6 +1,6 @@
 const express = require('express');
 const adminRouter = express.Router();
-const { addMovie, addArtist, getArtist, getMovies } = require('../controls/adminControl');
+const { addMovie, addArtist, getArtist, getMovies, viewTheaters } = require('../controls/adminControl');
 const multer = require('multer');
 const path=require('path')
 
@@ -29,4 +29,5 @@ adminRouter.route('/add-artist').post(upload.single('image'), addArtist);
 
 adminRouter.route("/get-artist").get(getArtist)
 adminRouter.route("/get-movies").get(getMovies)
+adminRouter.route("/viewusers").get(viewTheaters)
 module.exports = adminRouter;
