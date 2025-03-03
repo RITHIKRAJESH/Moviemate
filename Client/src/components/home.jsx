@@ -9,13 +9,15 @@ import {
   Grid,
   Rating,
   CircularProgress,
-  Button
+  Button,
+  TextField
 } from '@mui/material';
 import { Swiper, SwiperSlide } from 'swiper/react';
 import { Navigation, Pagination, Autoplay } from 'swiper/modules';
 import 'swiper/css';
 import 'swiper/css/navigation';
 import 'swiper/css/pagination';
+import Sentiment from 'sentiment'
 
 import spiderman from '../assets/spidey.avif';
 import johnwick from '../assets/johnwick1.jpg';
@@ -23,16 +25,45 @@ import civilwar from '../assets/civilwar.jpg';
 import avengers from '../assets/avengers.jpg';
 import { useNavigate } from 'react-router-dom';
 
+
+const genreScores = {
+  Action: 4,
+  Comedy: 7,
+  Drama: 3,
+  Horror: -2,
+  Romance: 6,
+ " Sci-Fi": 5,
+  Thriller: 2,
+  Animation: 8,
+  Documentary: 4,
+  Adventure:6,
+  Fantasy: 5,
+  Mystery:2,
+  Crime: 1,
+  Historical:3,
+  Biography:4,
+  Family:9,
+  Musical:7,
+  War: 1,
+  Western:2,
+  Superhero: 6
+};
+
+
+const sentiment = new Sentiment()
 const HomePage = () => {
   const staticPosters = [spiderman, avengers, johnwick, civilwar];
 
-  const [movies, setMovies] = useState([]); // Store movies from API
+  const [movies, setMovies] = useState([]); 
   const [loading, setLoading] = useState(true);
-  const navigate=useNavigate()
+  const [searchTerm, setSearchTerm] = useState('');
+  const [recommendedGenres, setRecommendedGenres] = useState([]);
+  const navigate = useNavigate();
+
   const handleCardClick = (movieId) => {
     navigate(`/movie-details/${movieId}`);
   };
-  // Fetch movies dynamically
+
   useEffect(() => {
     axios.get('http://localhost:9000/user/viewmovie')
       .then((res) => {
@@ -45,13 +76,27 @@ const HomePage = () => {
       });
   }, []);
 
-  // Group movies by industry (Hollywood, Bollywood, Mollywood, etc.)
   const hollywoodMovies = movies.filter((movie) => movie.industry === 'Hollywood');
   const bollywoodMovies = movies.filter((movie) => movie.industry === 'Bollywood');
   const mollywoodMovies = movies.filter((movie) => movie.industry === 'Mollywood');
   const otherMovies = movies.filter((movie) => !['Hollywood', 'Bollywood', 'Mollywood'].includes(movie.industry));
+
   const redirectToTheaterLogin = () => {
     navigate('/theaterlogin');
+  };
+
+  const handleSearch = () => {
+    const result = sentiment.analyze(searchTerm);
+    console.log("Sentiment Score:", result.score); 
+    console.log("Sentiment Analysis:", result);
+    const matchingGenres = [];
+    for (const genre in genreScores) {
+      if (genreScores[genre] >= result.score) {
+        matchingGenres.push(genre);
+      }
+    }
+    setRecommendedGenres(matchingGenres);
+    console.log("Recommended Genres Based on Sentiment:", matchingGenres);
   };
 
   return (
@@ -62,9 +107,9 @@ const HomePage = () => {
           <Typography variant="h6" sx={{ color: "red" }}>
             Movie Hub
           </Typography>
-          <Button 
-            variant="contained" 
-            color="error" 
+          <Button
+            variant="contained"
+            color="error"
             onClick={redirectToTheaterLogin}
           >
             Theater Login
@@ -99,6 +144,43 @@ const HomePage = () => {
             </SwiperSlide>
           ))}
         </Swiper>
+
+        {/* Floating Search Box */}
+        <Box
+          sx={{
+            position: 'absolute',
+            top: '20px',
+            left: '50%',
+            transform: 'translateX(-50%)',
+            zIndex: 10,
+            width: '80%',
+            maxWidth: '500px',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'space-between',
+            backgroundColor: 'rgba(130, 125, 125, 0.7)',
+            borderRadius: '30px',
+            padding: '10px',
+          }}
+        >
+          <TextField
+            variant="outlined"
+            size="small"
+            fullWidth
+            value={searchTerm}
+            onChange={(e) => setSearchTerm(e.target.value)}
+            placeholder="Search Movies..."
+            sx={{ backgroundColor: 'transparent',border:'none' }}
+          />
+          <Button
+            variant="contained"
+            color="secondary"
+            onClick={handleSearch}
+            sx={{ marginLeft: '10px' }}
+          >
+            Search
+          </Button>
+        </Box>
       </Box>
 
       {/* Movie Cards Section */}
@@ -115,7 +197,7 @@ const HomePage = () => {
                 </Typography>
                 <Grid container spacing={4}>
                   {hollywoodMovies.map((movie, index) => (
-                    <Grid item xs={12} sm={6} md={4} key={index} onClick={()=>{handleCardClick(movie._id)}}>
+                    <Grid item xs={12} sm={6} md={4} key={index} onClick={() => { handleCardClick(movie._id) }}>
                       <Box
                         sx={{
                           border: "1px solid red",
@@ -144,8 +226,7 @@ const HomePage = () => {
               </Box>
             )}
 
-            {/* Bollywood Movies */}
-            {bollywoodMovies.length > 0 && (
+{bollywoodMovies.length > 0 && (
               <Box sx={{ mt: 4 }}>
                 <Typography variant="h5" gutterBottom>
                   Bollywood Movies
@@ -219,6 +300,7 @@ const HomePage = () => {
             )}
 
             {/* Other Industry Movies */}
+            {/* Other Industry Movies */}
             {otherMovies.length > 0 && (
               <Box sx={{ mt: 4 }}>
                 <Typography variant="h5" gutterBottom>
@@ -226,7 +308,7 @@ const HomePage = () => {
                 </Typography>
                 <Grid container spacing={4}>
                   {otherMovies.map((movie, index) => (
-                    <Grid item xs={12} sm={6} md={4} key={index}>
+                    <Grid item xs={12} sm={6} md={4} key={index} onClick={()=>{handleCardClick(movie._id)}}>
                       <Box
                         sx={{
                           border: "1px solid red",
@@ -254,6 +336,7 @@ const HomePage = () => {
                 </Grid>
               </Box>
             )}
+
           </>
         )}
       </Container>
