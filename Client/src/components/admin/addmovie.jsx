@@ -87,7 +87,7 @@ const AddMovieForm = () => {
   const handleSubmit = () => {
     const formData = new FormData();
 
-    formData.append('movieName', movieName);
+    formData.append('movieName', movieName.toUpperCase());
     formData.append('releaseDate', releaseDate);
     formData.append('budget', budget);
     formData.append('storyline', storyline);
