@@ -8,7 +8,8 @@ const registerTheater = async (req, res) => {
 
         // Check if theater already exists
         const existingTheater = await TheaterModel.findOne({ email });
-        if (existingTheater) {
+        const existingLicense = await TheaterModel.findOne({license})
+        if (existingTheater || existingLicense) {
             return res.status(400).json({ message: "Theater already registered" });
         }
 

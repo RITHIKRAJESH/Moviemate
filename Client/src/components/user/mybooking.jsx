@@ -27,6 +27,8 @@ export default function Mybooking() {
     return date.toLocaleDateString('en-GB', { day: '2-digit', month: 'long', year: 'numeric' });
   };
 
+
+
   // Function to format show time based on category
   const getFormattedTime = (showTime) => {
     switch (showTime) {
@@ -41,15 +43,16 @@ export default function Mybooking() {
     }
   };
 
+  const tickets=ticket.filter((tick)=>tick.paymentStatus=="Completed")
   return (
     <Box sx={{ padding: 4 }}>
       <Typography variant="h4" align="center" gutterBottom>
         My Bookings
       </Typography>
 
-      {ticket.length > 0 ? (
+      {tickets.length > 0 ? (
         <Grid container spacing={3}>
-          {ticket.map((item, index) => (
+          {tickets.map((item, index) => (
             <Grid item xs={12} sm={6} md={4} key={index}>
               <Card sx={{ border: "1px solid #d32f2f", borderRadius: 2, boxShadow: 3 }}>
                 <CardContent>

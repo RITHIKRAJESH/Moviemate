@@ -233,62 +233,70 @@ export default function BookMovie() {
   const navigate = useNavigate();
 
   useEffect(() => {
+    // Retrieve the booking details from sessionStorage
+    const savedBookingDetails = sessionStorage.getItem("bookingDetails");
+  
+    if (savedBookingDetails) {
+      const { selectedDate, selectedTime, selectedSeats, selectedTheater } = JSON.parse(savedBookingDetails);
+  
+      // Set the state with the saved details
+      setSelectedDate(selectedDate);
+      setSelectedTime(selectedTime);
+      setSelectedSeats(selectedSeats);
+      setSelectedTheater(selectedTheater);
+    }
+  
     const email = localStorage.getItem("email");
-
+  
     if (email) {
       axios
         .get(`http://localhost:9000/user/getUserByEmail/`, { headers: { email } })
         .then((res) => setUserId(res.data.userId))
         .catch((err) => console.error("Error fetching user:", err));
     }
-
+  
     // Fetch movie details and filter theaters
     const fetchAndFilterTheaters = async () => {
       try {
-        // Fetch movie details
         const movieResponse = await axios.get(`http://localhost:9000/user/movie/${id}`);
-        
-        console.log("Movie API Response:", movieResponse.data); // Debugging
-    
+        console.log("Movie API Response:", movieResponse.data);
+  
         if (!Array.isArray(movieResponse.data) || movieResponse.data.length === 0) {
           console.error("Movie not found or response is not an array");
           return;
         }
-    
-        const movie = movieResponse.data[0]; // Get the first object from the array
-        const movieName = movie.movieName; // Extract movie name correctly
-    
-        console.log("Extracted Movie Name:", movieName); // Debugging
-    
-        setMovieName(movieName); // Update state
-    
-        // Fetch theaters
+  
+        const movie = movieResponse.data[0];
+        const movieName = movie.movieName;
+  
+        setMovieName(movieName);
+  
         const theaterResponse = await axios.get(`http://localhost:9000/user/viewtheater/${id}`);
-        
-        console.log("Theater API Response:", theaterResponse.data); // Debugging
-    
-        // Filter theaters based on movie name
+        console.log("Theater API Response:", theaterResponse.data);
+  
         const filteredTheaters = theaterResponse.data.filter((theater) =>
           theater.movies.includes(movieName)
         );
-    
+  
         setTheaters(filteredTheaters);
         console.log("Filtered Theaters:", filteredTheaters);
-        
+  
       } catch (error) {
         console.error("Error fetching data:", error);
       }
     };
-    
+  
     fetchAndFilterTheaters();
-
+  
     axios
       .get("http://localhost:9000/user/fetchbooked")
-    .then((res) => {setBooked(res.data)
-      console.log(res.data)
-    })
+      .then((res) => {
+        setBooked(res.data);
+        console.log(res.data);
+      })
       .catch((err) => console.error("Error fetching booked seats:", err));
   }, [id]);
+  
 
   useEffect(() => {
     if (selectedTheater && selectedDate && selectedTime && booked.length > 0) {
@@ -328,6 +336,42 @@ export default function BookMovie() {
       : 0;
   };
 
+  // const handleBooking = () => {
+  //   if (!userId) {
+  //     alert("User not logged in");
+  //     return;
+  //   }
+  //   if (!selectedTheater || !selectedDate || !selectedTime || selectedSeats.length === 0) {
+  //     alert("Please complete all the fields.");
+  //     return;
+  //   }
+
+  //   const email = localStorage.getItem("email");
+  //   const bookingDetails = {
+  //     userId,
+  //     movieId: id,
+  //     date: selectedDate,
+  //     time: selectedTime,
+  //     seats: selectedSeats,
+  //     totalPrice: calculatePrice(),
+  //     theaterId: selectedTheater,
+  //     email,
+  //   };
+
+  //   axios
+  //     .post("http://localhost:9000/user/bookTickets", bookingDetails)
+  //     .then((res) => {
+  //       if (res.status === 200) {
+  //         navigate("/payment-page", { state: { price: bookingDetails.totalPrice ,userid:bookingDetails.userId ,movieid:bookingDetails.movieId} });
+  //       }
+  //     })
+  //     .catch((err) => {
+  //       console.error("Error booking tickets:", err);
+  //       alert("There was an issue with the booking. Please try again later.");
+  //     });
+  // };
+
+ 
   const handleBooking = () => {
     if (!userId) {
       alert("User not logged in");
@@ -337,24 +381,41 @@ export default function BookMovie() {
       alert("Please complete all the fields.");
       return;
     }
-
-    const email = localStorage.getItem("email");
+  
+    // Prepare booking details to save in sessionStorage
     const bookingDetails = {
-      userId,
-      movieId: id,
-      date: selectedDate,
-      time: selectedTime,
-      seats: selectedSeats,
+      selectedDate,
+      selectedTime,
+      selectedSeats,
       totalPrice: calculatePrice(),
-      theaterId: selectedTheater,
-      email,
+      selectedTheater
     };
-
+  
+    // Save booking details to sessionStorage
+    sessionStorage.setItem("bookingDetails", JSON.stringify(bookingDetails));
+  
+    const email = localStorage.getItem("email");
+  
     axios
-      .post("http://localhost:9000/user/bookTickets", bookingDetails)
+      .post("http://localhost:9000/user/bookTickets", {
+        userId,
+        movieId: id,
+        date: selectedDate,
+        time: selectedTime,
+        seats: selectedSeats,
+        totalPrice: calculatePrice(),
+        theaterId: selectedTheater,
+        email,
+      })
       .then((res) => {
         if (res.status === 200) {
-          navigate("/payment-page", { state: { price: bookingDetails.totalPrice ,userid:bookingDetails.userId ,movieid:bookingDetails.movieId} });
+          navigate("/payment-page", {
+            state: {
+              price: bookingDetails.totalPrice,
+              userid: userId,
+              movieid: id
+            }
+          });
         }
       })
       .catch((err) => {
@@ -362,6 +423,7 @@ export default function BookMovie() {
         alert("There was an issue with the booking. Please try again later.");
       });
   };
+  
 
   return (
     <div className="container mt-4">

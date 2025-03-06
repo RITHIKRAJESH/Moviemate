@@ -4,7 +4,9 @@ import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import { 
   AppBar, Toolbar, Button, Typography, List, ListItem, 
-  CircularProgress, Box, TextField, IconButton 
+  CircularProgress, Box, TextField, IconButton, 
+  Select,
+  MenuItem
 } from '@mui/material';
 import DeleteIcon from '@mui/icons-material/Delete';
 
@@ -22,7 +24,7 @@ export default function Addmovies() {
   const [error, setError] = useState(null);
   const [newMovie, setNewMovie] = useState("");
   const token = jwtDecode(storedToken);
-
+  const [fetchedMovie,setFetchedmovie]=useState([])
   useEffect(() => {
     axios.get("http://localhost:9000/theater/viewProfile", {
       headers: { id: token.theater._id }
@@ -40,8 +42,17 @@ export default function Addmovies() {
       setError("Failed to load movies");
       setLoading(false);
     });
+    axios.get("http://localhost:9000/admin/get-movies")
+    .then((res)=>{
+      setFetchedmovie(res.data)
+      console.log(res.data)
+    }).catch((err)=>{
+      console.log(err)
+    })
   }, []);
 
+  const theaterMovies = fetchedMovie.filter((movie) => movie.platform === 'Theater');
+  console.log(theaterMovies);
   // Function to add a new movie
   const handleAddMovie = () => {
     if (newMovie.trim() === "") return;
@@ -106,13 +117,18 @@ export default function Addmovies() {
 
         {/* Add Movie Section */}
         <Box sx={{ display: "flex", gap: 2, mb: 3 }}>
-          <TextField
-            label="New Movie"
-            variant="outlined"
-            value={newMovie}
-            onChange={(e) => setNewMovie(e.target.value)}
-            fullWidth
-          />
+        <Select
+        label="New Movie"
+        value={newMovie}
+        onChange={(e) => setNewMovie(e.target.value)}
+        fullWidth
+      >
+        {theaterMovies.map((movie) => (
+          <MenuItem key={movie._id} value={movie.movieName}>
+            {movie.movieName}
+          </MenuItem>
+        ))}
+      </Select>
           <Button 
             variant="contained" 
             sx={{ backgroundColor: "red", color: "white" }} 

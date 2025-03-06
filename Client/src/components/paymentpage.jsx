@@ -52,7 +52,8 @@ export default function PaymentPage() {
     .then((res)=>{
     alert(res.data.message)
     // if(res.data.status==200){
-    //   // navigate('/user/userhome')
+      navigate('/user/userhome')
+      sessionStorage.clear()
     // }
     }).catch((err)=>{
       console.log("error",err)

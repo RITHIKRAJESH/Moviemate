@@ -35,7 +35,7 @@ const loginUser = async (req, res) => {
             service: 'gmail', // Or your email service
             auth: {
                 user: 'rajeshrithik49@gmail.com',
-                pass: process.env.pass // Use environment variables for security
+                pass: 'wjqo hcwa blhb dmjq' // Use environment variables for security
             }
         });
 
