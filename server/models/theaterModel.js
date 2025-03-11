@@ -1,14 +1,19 @@
-const mongoose=require('mongoose')
+const mongoose = require('mongoose');
 
-const theaterSchema=new mongoose.Schema({
-    name:{type:String},
-    license:{type:String},
-    email:{type:String},
-    place:{type:String},
-    movies:{type:Array},
-    password:{type:String}
-},{timestamps:true})
+const theaterSchema = new mongoose.Schema({
+    name: { type: String },
+    license: { type: String },
+    email: { type: String },
+    place: { type: String },
+    movies: [
+        {
+            movieName: { type: String },
+            shows: { type: [String] } 
+        }
+    ],
+    password: { type: String }
+}, { timestamps: true });
 
-const theaterModel=new mongoose.model("theater",theaterSchema)
+const TheaterModel = mongoose.model("Theater", theaterSchema);
 
-module.exports=theaterModel
+module.exports = TheaterModel;

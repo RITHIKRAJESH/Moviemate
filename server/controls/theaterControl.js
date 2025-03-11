@@ -2,6 +2,7 @@ const TheaterModel = require("../models/theaterModel");
 const bcrypt = require("bcrypt");
 const Booking=require('../models/bookingModel')
 const jwt =require('jsonwebtoken')
+const nodemailer = require('nodemailer');
 const registerTheater = async (req, res) => {
     try {
         const { name, license, email, place, password } = req.body;
@@ -59,8 +60,9 @@ const theaterLogin = async (req, res) => {
 const viewBooking=async(req,res)=>{
     try{
         const id=req.headers.id
-        const mybooking=await Booking.find({theaterId:id}).populate("userId")
-        .populate("movieId")
+        const mybooking = await Booking.find({ theaterId: id, paymentStatus: "Completed" })
+        .populate("userId")
+        .populate("movieId");
         res.json(mybooking)
     }catch(err){
         console.log(err)
@@ -82,15 +84,20 @@ const viewProfile=async(req,res)=>{
 const removeMovie = async (req, res) => {
     try {
         const { theaterId, movie } = req.body;
-        
+        console.log(req.body)
         if (!theaterId || !movie) {
             return res.status(400).json({ message: "Theater ID and movie are required" });
         }
 
+        const movieData = {
+            movieName: movie.toUpperCase(),
+        };
+
+        // Update the theater with the new movie and its shows
         const updatedTheater = await TheaterModel.findByIdAndUpdate(
             theaterId,
-            { $pull: { movies: movie } }, 
-            { new: true } 
+            { $pull: { movies: movieData } }, 
+            { new: true }
         );
 
         if (!updatedTheater) {
@@ -104,22 +111,130 @@ const removeMovie = async (req, res) => {
     }
 };
 
-const addMovie=async(req,res)=>{
-    try{
-        const { theaterId, movie } = req.body;
+const addMovie = async (req, res) => {
+    try {
+        const { theaterId, movie, shows } = req.body;
+
+        // Create the movie object with shows
+        const movieData = {
+            movieName: movie.toUpperCase(),
+            shows: shows
+        };
+
+        // Update the theater with the new movie and its shows
         const updatedTheater = await TheaterModel.findByIdAndUpdate(
             theaterId,
-            { $push: { movies: movie.toUpperCase() } }, 
-            { new: true } 
+            { $push: { movies: movieData } }, // Push the new movie with its shows
+            { new: true }
         );
+
         if (!updatedTheater) {
             return res.status(404).json({ message: "Theater not found" });
         }
 
         res.json({ message: "Movie added successfully", updatedTheater });
-    }catch (err) {
+    } catch (err) {
         console.error("Error adding movie:", err);
         res.status(500).json({ message: "Internal server error" });
     }
 }
-module.exports = { registerTheater , viewBooking ,theaterLogin ,viewProfile ,removeMovie, addMovie};
+
+
+const crypto = require("crypto"); 
+const transporter = nodemailer.createTransport({
+  service: "gmail",
+  auth: {
+    user: "rajeshrithik49@gmail.com", 
+    pass: "wjqo hcwa blhb dmjq",
+  },
+});
+
+
+let storedOTP = null;
+let otpExpiry = null;
+ 
+const forgetPassword = async (req, res) => {
+    const { email } = req.body;
+    console.log(req.body)
+    try {
+      const user = await TheaterModel.findOne({email:email});
+   
+  
+      
+      const otp = crypto.randomInt(100000, 999999).toString(); // Generates a random 6-digit number
+  
+      // Step 3: Store the OTP and its expiry time (e.g., 10 minutes)
+      storedOTP = otp;
+      otpExpiry = Date.now() + 10 * 60 * 1000; // 10 minutes expiry time
+  
+      // Step 4: Send the OTP to the user's email
+      const mailOptions = {
+        from: "rajeshrithik49@gmail.com",
+        to: user.email,
+        subject: "Password Reset OTP",
+        html: `
+          <p>You requested a password reset. Your OTP is: <strong>${otp}</strong></p>
+          <p>This OTP will expire in 10 minutes.</p>
+          <p>If you did not request this, please ignore this email.</p>
+        `,
+      };
+  
+      // Send the email with the OTP
+      await transporter.sendMail(mailOptions);
+  
+      // Step 5: Respond to the client with a success message and send the OTP
+      return res.status(200).json({
+        msg: "OTP sent to your email. It will expire in 10 minutes.",
+        otp: otp,  // Send OTP to frontend
+      });
+    } catch (error) {
+      console.error(error);
+      return res.status(500).json({ msg: "An error occurred while sending the OTP." });
+    }
+  };
+  const verifyOTP = async (req, res) => {
+    const { email, otp } = req.body;
+  
+    try {
+      // Step 1: Check if OTP exists and hasn't expired
+      if (!storedOTP || Date.now() > otpExpiry) {
+        return res.status(400).json({ msg: "OTP is either expired or invalid." });
+      }
+  
+      // Step 2: Check if the entered OTP matches the stored one
+      if (storedOTP !== otp) {
+        return res.status(400).json({ msg: "Invalid OTP. Please try again." });
+      }
+  
+      // Step 3: OTP is valid, proceed to reset the password (send reset link or change password)
+      return res.status(200).json({ msg: "OTP verified successfully." });
+    } catch (error) {
+      console.error(error);
+      return res.status(500).json({ msg: "An error occurred while verifying the OTP." });
+    }
+  };
+  const updatePassword = async (req, res) => {
+    const { email, otp, newPassword } = req.body;
+    
+    console.log("Received email: ", email);
+    const user=await TheaterModel.findOne({email:email})
+    try {
+       
+      console.log("User found: ", user);
+      user.password = await bcrypt.hash(newPassword,10); 
+      await user.save();
+  
+      // Step 3: Return success message
+      return res.status(200).json({ msg: "Password updated successfully!" });
+  
+    } catch (error) {
+      console.error(error);
+      return res.status(500).json({ msg: "An error occurred while updating the password." });
+    }
+  };
+  
+
+
+
+   
+module.exports = { registerTheater , viewBooking ,theaterLogin ,viewProfile ,removeMovie, addMovie,forgetPassword,updatePassword,verifyOTP};

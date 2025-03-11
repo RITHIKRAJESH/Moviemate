@@ -6,7 +6,7 @@ import {
   AppBar, Toolbar, Button, Typography, List, ListItem, 
   CircularProgress, Box, TextField, IconButton, 
   Select,
-  MenuItem
+  MenuItem, Checkbox, FormControlLabel
 } from '@mui/material';
 import DeleteIcon from '@mui/icons-material/Delete';
 
@@ -15,16 +15,18 @@ export default function Addmovies() {
   const storedToken = localStorage.getItem('token');
 
   if (!storedToken) {
-    navigate('/theaterlogin'); // Redirect if no token
+    navigate('/theaterlogin'); 
     return null;
   }
 
-  const [movies, setMovies] = useState([]);
+  const [movies, setMovies] = useState([]);  
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [newMovie, setNewMovie] = useState("");
+  const [selectedShows, setSelectedShows] = useState([]);
   const token = jwtDecode(storedToken);
-  const [fetchedMovie,setFetchedmovie]=useState([])
+  const [fetchedMovie, setFetchedmovie] = useState([]);
+
   useEffect(() => {
     axios.get("http://localhost:9000/theater/viewProfile", {
       headers: { id: token.theater._id }
@@ -42,27 +44,42 @@ export default function Addmovies() {
       setError("Failed to load movies");
       setLoading(false);
     });
+
     axios.get("http://localhost:9000/admin/get-movies")
-    .then((res)=>{
-      setFetchedmovie(res.data)
-      console.log(res.data)
-    }).catch((err)=>{
-      console.log(err)
-    })
+    .then((res) => {
+      setFetchedmovie(res.data);
+      console.log(res.data);
+    }).catch((err) => {
+      console.log(err);
+    });
   }, []);
 
   const theaterMovies = fetchedMovie.filter((movie) => movie.platform === 'Theater');
   console.log(theaterMovies);
-  // Function to add a new movie
-  const handleAddMovie = () => {
-    if (newMovie.trim() === "") return;
 
-    axios.post("http://localhost:9000/theater/addMovie", 
-      { movie: newMovie, theaterId: token.theater._id }
-    )
+  // Function to handle changes in show selection
+  const handleShowChange = (event) => {
+    const { value, checked } = event.target;
+    setSelectedShows(prevShows => 
+      checked ? [...prevShows, value] : prevShows.filter(show => show !== value)
+    );
+  };
+
+  // Function to add a new movie with selected shows
+  const handleAddMovie = () => {
+    if (newMovie.trim() === "" || selectedShows.length === 0) return;
+
+    const movieData = {
+      movie: newMovie,
+      theaterId: token.theater._id,
+      shows: selectedShows,  // Include the selected shows
+    };
+
+    axios.post("http://localhost:9000/theater/addMovie", movieData)
     .then(res => {
-      setMovies([...movies, newMovie]); // Update local state
+      setMovies([...movies, { movieName: newMovie, shows: selectedShows }]); // Update local state
       setNewMovie(""); // Clear input
+      setSelectedShows([]); // Clear selected shows
     })
     .catch(err => console.log("Error adding movie:", err));
   };
@@ -70,10 +87,10 @@ export default function Addmovies() {
   // Function to remove a movie
   const handleRemoveMovie = (movieToRemove) => {
     axios.post("http://localhost:9000/theater/removeMovie", 
-      { movie: movieToRemove, theaterId: token.theater._id }
+      { movie: movieToRemove.movieName, theaterId: token.theater._id }
     )
     .then((res) => {
-      setMovies(movies.filter(movie => movie !== movieToRemove)); // Remove movie locally
+      setMovies(movies.filter(movie => movie.movieName !== movieToRemove.movieName)); // Remove movie locally
     })
     .catch(err => console.log("Error removing movie:", err));
   };
@@ -117,18 +134,51 @@ export default function Addmovies() {
 
         {/* Add Movie Section */}
         <Box sx={{ display: "flex", gap: 2, mb: 3 }}>
-        <Select
-        label="New Movie"
-        value={newMovie}
-        onChange={(e) => setNewMovie(e.target.value)}
-        fullWidth
-      >
-        {theaterMovies.map((movie) => (
-          <MenuItem key={movie._id} value={movie.movieName}>
-            {movie.movieName}
-          </MenuItem>
-        ))}
-      </Select>
+          <Select
+            label="New Movie"
+            value={newMovie}
+            onChange={(e) => setNewMovie(e.target.value)}
+            fullWidth
+          >
+            {theaterMovies.map((movie) => (
+              <MenuItem key={movie._id} value={movie.movieName}>
+                {movie.movieName}
+              </MenuItem>
+            ))}
+          </Select>
+
+          <Box>
+            <Typography>Select Shows:</Typography>
+            {[
+  "Morning Show 10AM",
+  "Morning Show 10:30AM",
+  "Morning Show 11AM",
+  "Morning Show 11:30AM",
+  "Noon Show 12PM",
+  "Noon Show 12:30PM",
+  "Noon Show 2PM",
+  "Noon Show 2:30PM",
+  "Evening Show 5PM",
+  "Evening Show 6PM",
+  "Evening Show 7PM",
+  "Night Show 9PM",
+  "Late Night Show 11PM"
+]
+.map((show) => (
+              <FormControlLabel
+                key={show}
+                control={
+                  <Checkbox
+                    value={show}
+                    checked={selectedShows.includes(show)}
+                    onChange={handleShowChange}
+                  />
+                }
+                label={show}
+              />
+            ))}
+          </Box>
+
           <Button 
             variant="contained" 
             sx={{ backgroundColor: "red", color: "white" }} 
@@ -159,10 +209,10 @@ export default function Addmovies() {
               >
                 <Box>
                   <Typography variant="h6" sx={{ fontWeight: "bold" }}>
-                    SHOWS: NOON SHOW, EVENING SHOW, NIGHT SHOW
+                    MOVIE: {movie.movieName.toUpperCase()}
                   </Typography>
-                  <Typography variant="h6" sx={{ color: "red", mt: 1 }}> 
-                    CURRENT MOVIE: {movie.toUpperCase()}
+                  <Typography variant="h6" sx={{ color: "red", mt: 1 }}>
+                    SHOWS: {movie.shows.join(", ")}
                   </Typography>
                 </Box>
                 <IconButton onClick={() => handleRemoveMovie(movie)} color="error">

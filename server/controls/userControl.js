@@ -119,14 +119,15 @@ const Viewmovie = async (req, res) => {
 
 
 const userBookTickets = async (req, res) => {
-    const id = req.params._id;
-    const movieSent = await Movie.findOne({ id });
+    const id = req.params.id;
+    console.log(id)
+    const movieSent = await Movie.findOne({_id:id });
     if (!movieSent) {
         return res.status(404).json({ message: "Movie not found" });
     }
     const name = movieSent.movieName;
     console.log(name);
-    const theaters = await Theater.find({ movies: name });
+    const theaters = await Theater.find({ "movies.movieName": name });
     console.log(theaters)
    if (theaters.length > 0) {
         res.json(theaters);
@@ -196,6 +197,7 @@ const fetchBookedTicket = async (req, res) => {
             .populate('movieId')   
             .populate('theaterId'); 
         res.status(200).json(booked);
+        console.log("Booked Tickets")
     } catch (err) {
         console.error(err);
         res.status(500).json({ error: "Something went wrong while fetching booked tickets" });

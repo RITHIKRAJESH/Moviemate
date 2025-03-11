@@ -15,7 +15,7 @@ export default function Bookings() {
   const [error, setError] = useState(null);
 
   if (!storedToken) {
-    navigate('/theaterlogin'); // Redirect if no token
+    navigate('/theaterlogin');
     return null;
   }
 

@@ -32,7 +32,7 @@ const genreScores = {
   Drama: 3,
   Horror: -2,
   Romance: 6,
- " Sci-Fi": 5,
+ "Sci-Fi": 5,
   Thriller: 2,
   Animation: 8,
   Documentary: 4,
@@ -58,6 +58,7 @@ const HomePage = () => {
   const [loading, setLoading] = useState(true);
   const [searchTerm, setSearchTerm] = useState('');
   const [recommendedGenres, setRecommendedGenres] = useState([]);
+  const [filteredMovie,setFilteredMovies]=useState([])
   const navigate = useNavigate();
 
   const handleCardClick = (movieId) => {
@@ -85,20 +86,30 @@ const HomePage = () => {
     navigate('/theaterlogin');
   };
 
+  
   const handleSearch = () => {
     const result = sentiment.analyze(searchTerm);
-    console.log("Sentiment Score:", result.score); 
-    console.log("Sentiment Analysis:", result);
     const matchingGenres = [];
     for (const genre in genreScores) {
-      if (genreScores[genre] >= result.score) {
+      if (genreScores[genre] == result.score) {
         matchingGenres.push(genre);
       }
     }
+    console.log(matchingGenres)
     setRecommendedGenres(matchingGenres);
-    console.log("Recommended Genres Based on Sentiment:", matchingGenres);
+
+    const filtered = movies.filter((movie) => {
+      const movieGenres = movie.genre.split(',');
+      return movieGenres.some((genre) => matchingGenres.includes(genre.trim()));
+    });
+
+    setFilteredMovies(filtered);
+    console.log(filtered)
+    navigate(`/search/${result.score}`)
+   
   };
 
+  
   return (
     <Box>
       {/* Navbar */}
@@ -340,6 +351,8 @@ const HomePage = () => {
           </>
         )}
       </Container>
+      
+  
     </Box>
   );
 };

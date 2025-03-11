@@ -6,6 +6,8 @@ import Addmovies from "./components/theater/addmovies";
 import Bookings from "./components/theater/bookings";
 import Profile from "./components/theater/profile";
 import AdminLogin from "./components/adminlogin";
+import SearchedMovies from "./components/searchedMovies";
+import UserSearchedMovies from "./components/user/userSearch";
 
 // Lazy loading components
 const HomePage = React.lazy(() => import("./components/home"));
@@ -30,6 +32,8 @@ function App() {
       <Routes>
         <Route path="/" element={<HomePage />} />
         <Route path="/user/userhome" element={<Userhome />} />
+        <Route path="/search/:id" element={<SearchedMovies/>}/>
+        <Route path="/user/search/:id" element={<UserSearchedMovies/>}/>
         <Route path="/movie-details/:id" element={<MovieDetailsPage />} />
         <Route path="/user/book-movie/:id" element={<Bookmovie />} />
         <Route path="/user/movie/:id" element={<ViewMovie />} />

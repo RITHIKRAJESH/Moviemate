@@ -14,9 +14,12 @@ import {
   Card,
   CardMedia,
   CardContent,
-  Button, // Import Button component
+  Button,
 } from '@mui/material';
 import axios from 'axios';
+import Sentiment from 'sentiment'; // Import Sentiment library
+
+const sentiment = new Sentiment(); // Initialize sentiment analysis
 
 const UserHome = () => {
   const [movies, setMovies] = useState([]);
@@ -24,6 +27,7 @@ const UserHome = () => {
   const [selectedGenre, setSelectedGenre] = useState('');
   const [selectedArtist, setSelectedArtist] = useState('');
   const [selectedRating, setSelectedRating] = useState(0);
+  const [searchText, setSearchText] = useState(''); // State to store search box input
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -48,20 +52,33 @@ const UserHome = () => {
 
   const handleLogout = () => {
     navigate('/'); 
-    localStorage.clear()
+    localStorage.clear();
   };
+
+  // Filter movies based on selected criteria
   const filteredMovies = movies.filter((movie) => (
-    (!selectedGenre || movie.genre.toLowerCase().includes(selectedGenre.toLowerCase())) &&
-    (!selectedArtist || movie.artist.toLowerCase().includes(selectedArtist.toLowerCase())) &&
+    (!selectedGenre || movie.genre.split(',').some((genre) =>
+      selectedGenre.toLowerCase().includes(genre.trim().toLowerCase())
+    )) &&
     (!selectedRating || movie.rating.toString().includes(selectedRating.toString()))
   ));
-  
+
+  // Handle Search Button Click
+  const handleSearchClick = () => {
+    const result = sentiment.analyze(searchText);
+    const score = result.score; // Get the sentiment score (positive or negative)
+
+    // Redirect to the search page with sentiment score
+    if (searchText.trim()) {
+      navigate(`/user/search/${score}`);
+    }
+  };
 
   return (
     <Box>
       {/* AppBar with My Bookings Button */}
       <AppBar position="static" sx={{ backgroundColor: "black" }}>
-        <Toolbar sx={{ display: "flex", justifyContent: "flex-end",gap:"25px" }}>
+        <Toolbar sx={{ display: "flex", justifyContent: "flex-end", gap: "25px" }}>
           <Typography variant="h6" sx={{ color: "red" }}>
             Movie Hub
           </Typography>
@@ -69,7 +86,7 @@ const UserHome = () => {
             My Bookings
           </Button>
           <Button variant="contained" color="error" onClick={handleLogout}>
-           LOGOUT
+            LOGOUT
           </Button>
         </Toolbar>
       </AppBar>
@@ -86,24 +103,9 @@ const UserHome = () => {
           sx={{ width: 200 }}
         >
           <MenuItem value="">All</MenuItem>
-          <MenuItem value="Action ">Action</MenuItem>
-          <MenuItem value="Adventure ">Adventure</MenuItem>
-          <MenuItem value="Thriller ">Thriller</MenuItem>
-        </TextField>
-
-        <TextField
-          select
-          label="Artist"
-          value={selectedArtist}
-          onChange={(e) => setSelectedArtist(e.target.value)}
-          variant="outlined"
-          size="small"
-          sx={{ width: 200 }}
-        >
-          <MenuItem value="">All</MenuItem>
-          <MenuItem value="Keanu Reeves">Keanu Reeves</MenuItem>
-          <MenuItem value="Andrew Garfield">Andrew Garfield</MenuItem>
-          <MenuItem value="Chris Evans">Chris Evans</MenuItem>
+          <MenuItem value="Action">Action</MenuItem>
+          <MenuItem value="Adventure">Adventure</MenuItem>
+          <MenuItem value="Thriller">Thriller</MenuItem>
         </TextField>
 
         <TextField
@@ -116,9 +118,24 @@ const UserHome = () => {
           sx={{ width: 200 }}
         >
           <MenuItem value={0}>All</MenuItem>
-          <MenuItem value={4}>4 & above</MenuItem>
-          <MenuItem value={3}>3 & above</MenuItem>
+          <MenuItem value={4}>4 </MenuItem>
+          <MenuItem value={3}>3</MenuItem>
         </TextField>
+
+        {/* Search Box for Sentiment Analysis */}
+        <TextField
+          label="Search Movies"
+          value={searchText}
+          onChange={(e) => setSearchText(e.target.value)}
+          variant="outlined"
+          size="small"
+          sx={{ width: 300 }}
+        />
+
+        {/* Search Button */}
+        <Button variant="contained" color="primary" onClick={handleSearchClick} sx={{ height: '100%' }}>
+          Search
+        </Button>
       </Container>
 
       {/* Movie List */}
