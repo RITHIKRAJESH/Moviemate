@@ -34,13 +34,13 @@ const loginUser = async (req, res) => {
         const transporter = nodemailer.createTransport({
             service: 'gmail', // Or your email service
             auth: {
-                user: 'rajeshrithik49@gmail.com',
-                pass: 'wjqo hcwa blhb dmjq' // Use environment variables for security
+                user: '',
+                pass: ''
             }
         });
 
         const mailOptions = {
-            from: 'rajeshrithik49@gmail.com',
+            from: '',
             to: email,
             subject: 'Moviemate Otp for login',
             text: `Your OTP is: ${user.otp}`
