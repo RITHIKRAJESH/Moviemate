@@ -89,6 +89,7 @@ const HomePage = () => {
   
   const handleSearch = () => {
     const result = sentiment.analyze(searchTerm);
+    console.log(result)
     const matchingGenres = [];
     for (const genre in genreScores) {
       if (genreScores[genre] == result.score) {

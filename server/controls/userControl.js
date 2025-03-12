@@ -215,4 +215,17 @@ const myBooking=async(req,res)=>{
     }
 }
 
-module.exports = { myBooking,loginUser, verifyOtp ,userViewmovie,userBookTickets,getUserByEmail,useraddtickets,fetchBookedTicket,Viewmovie,ticketPayment};
+const addReview=async(req,res)=>{
+    const {movieId,userId,review}=req.body
+    const addreview=await Movie.findById({_id:movieId})
+    const reviews = {
+        userId: userId,
+        reviewText: review,
+        createdAt: new Date(),
+      };
+      addreview.review.push(reviews);
+      await addreview.save();
+      return res.status(201).json({ message: 'Review added successfully'});
+}
+
+module.exports = { myBooking,loginUser, verifyOtp ,userViewmovie,userBookTickets,getUserByEmail,useraddtickets,fetchBookedTicket,Viewmovie,ticketPayment,addReview};

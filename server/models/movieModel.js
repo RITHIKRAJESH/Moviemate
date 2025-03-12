@@ -13,9 +13,24 @@ const movieSchema = new mongoose.Schema({
   genre: { type: String, required: true },
   poster: { type: String, required: false },
   language:{type:String},
-  industry:{type:String}
+  industry:{type:String},
+  review: [
+    {
+      userId: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'user', 
+        required: true
+      },
+      reviewText: {
+        type: String,
+        required: true
+      },
+      createdAt: {
+        type: Date,
+        default: Date.now
+      }
+    }
+  ]
 }, { timestamps: true });
-
 const movieModel = mongoose.model('movie', movieSchema);
-
 module.exports = movieModel
